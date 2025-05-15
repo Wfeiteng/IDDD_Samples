@@ -16,8 +16,7 @@ package com.saasovation.collaboration.domain.model.collaborator;
 
 import java.io.Serializable;
 
-public abstract class Collaborator
-        implements Comparable<Collaborator>, Serializable {
+public abstract class Collaborator implements Comparable<Collaborator>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -67,10 +66,7 @@ public abstract class Collaborator
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             Collaborator typedObject = (Collaborator) anObject;
-            equalObjects =
-                this.emailAddress().equals(typedObject.emailAddress()) &&
-                this.identity().equals(typedObject.identity()) &&
-                this.name().equals(typedObject.name());
+            equalObjects = this.emailAddress().equals(typedObject.emailAddress()) && this.identity().equals(typedObject.identity()) && this.name().equals(typedObject.name());
         }
 
         return equalObjects;
@@ -78,19 +74,14 @@ public abstract class Collaborator
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (57691 * this.hashPrimeValue())
-            + this.emailAddress().hashCode()
-            + this.identity().hashCode()
-            + this.name().hashCode();
+        int hashCodeValue = +(57691 * this.hashPrimeValue()) + this.emailAddress().hashCode() + this.identity().hashCode() + this.name().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +
-                " [emailAddress=" + emailAddress + ", identity=" + identity + ", name=" + name + "]";
+        return this.getClass().getSimpleName() + " [emailAddress=" + emailAddress + ", identity=" + identity + ", name=" + name + "]";
     }
 
     protected Collaborator() {

@@ -35,14 +35,8 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
     private long timeoutOccursOn;
     private int totalRetriesPermitted;
 
-    public TimeConstrainedProcessTracker(
-            String aTenantId,
-            ProcessId aProcessId,
-            String aDescription,
-            Date anOriginalStartTime,
-            long anAllowableDuration,
-            int aTotalRetriesPermitted,
-            String aProcessTimedOutEventType) {
+    public TimeConstrainedProcessTracker(String aTenantId, ProcessId aProcessId, String aDescription, Date anOriginalStartTime, long anAllowableDuration,
+                                         int aTotalRetriesPermitted, String aProcessTimedOutEventType) {
 
         super();
 
@@ -73,9 +67,7 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
     }
 
     public void failWhenConcurrencyViolation(int aVersion) {
-        this.assertStateTrue(
-                aVersion == this.concurrencyVersion(),
-                "Concurrency Violation: Stale data detected. Entity was already modified.");
+        this.assertStateTrue(aVersion == this.concurrencyVersion(), "Concurrency Violation: Stale data detected. Entity was already modified.");
     }
 
     public ProcessId processId() {
@@ -114,9 +106,7 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
                 if (this.totalRetriesReached()) {
                     this.setProcessInformedOfTimeout(true);
                 } else {
-                    this.setTimeoutOccursOn(
-                            this.timeoutOccursOn()
-                            + this.allowableDuration());
+                    this.setTimeoutOccursOn(this.timeoutOccursOn() + this.allowableDuration());
                 }
             }
 
@@ -150,9 +140,7 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             TimeConstrainedProcessTracker typedObject = (TimeConstrainedProcessTracker) anObject;
-            equalObjects =
-                this.tenantId().equals(typedObject.tenantId()) &&
-                this.processId().equals(typedObject.processId());
+            equalObjects = this.tenantId().equals(typedObject.tenantId()) && this.processId().equals(typedObject.processId());
         }
 
         return equalObjects;
@@ -160,21 +148,14 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (79157 * 107)
-            + this.tenantId().hashCode()
-            + this.processId().hashCode();
+        int hashCodeValue = +(79157 * 107) + this.tenantId().hashCode() + this.processId().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "TimeConstrainedProcessTracker [allowableDuration=" + allowableDuration + ", completed=" + completed
-                + ", description=" + description + ", processId=" + processId + ", processInformedOfTimeout="
-                + processInformedOfTimeout + ", processTimedOutEventType=" + processTimedOutEventType + ", retryCount="
-                + retryCount + ", tenantId=" + tenantId + ", timeConstrainedProcessTrackerId=" + timeConstrainedProcessTrackerId
-                + ", timeoutOccursOn=" + timeoutOccursOn + ", totalRetriesPermitted=" + totalRetriesPermitted + "]";
+        return "TimeConstrainedProcessTracker [allowableDuration=" + allowableDuration + ", completed=" + completed + ", description=" + description + ", processId=" + processId + ", processInformedOfTimeout=" + processInformedOfTimeout + ", processTimedOutEventType=" + processTimedOutEventType + ", retryCount=" + retryCount + ", tenantId=" + tenantId + ", timeConstrainedProcessTrackerId=" + timeConstrainedProcessTrackerId + ", timeoutOccursOn=" + timeoutOccursOn + ", totalRetriesPermitted=" + totalRetriesPermitted + "]";
     }
 
     protected TimeConstrainedProcessTracker() {
@@ -214,17 +195,14 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
         ProcessTimedOut processTimedOut = null;
 
         try {
-            Class<?> processTimedOutClass =
-                    (Class<?>) Class.forName(this.processTimedOutEventType());
+            Class<?> processTimedOutClass = (Class<?>) Class.forName(this.processTimedOutEventType());
 
             Constructor<?> ctor = processTimedOutClass.getConstructor(ProcessId.class);
 
             processTimedOut = (ProcessTimedOut) ctor.newInstance(this.processId());
 
         } catch (Exception e) {
-            throw new IllegalStateException(
-                    "Error creating new ProcessTimedOut instance because: "
-                    + e.getMessage());
+            throw new IllegalStateException("Error creating new ProcessTimedOut instance because: " + e.getMessage());
         }
 
         return processTimedOut;
@@ -234,26 +212,14 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
         ProcessTimedOut processTimedOut = null;
 
         try {
-            Class<?> processTimedOutClass =
-                    (Class<?>) Class.forName(this.processTimedOutEventType());
+            Class<?> processTimedOutClass = (Class<?>) Class.forName(this.processTimedOutEventType());
 
-            Constructor<?> ctor =
-                    processTimedOutClass
-                        .getConstructor(
-                                ProcessId.class,
-                                int.class,
-                                int.class);
+            Constructor<?> ctor = processTimedOutClass.getConstructor(ProcessId.class, int.class, int.class);
 
-            processTimedOut = (ProcessTimedOut)
-                    ctor.newInstance(
-                            this.processId(),
-                            this.totalRetriesPermitted(),
-                            this.retryCount());
+            processTimedOut = (ProcessTimedOut) ctor.newInstance(this.processId(), this.totalRetriesPermitted(), this.retryCount());
 
         } catch (Exception e) {
-            throw new IllegalStateException(
-                    "Error creating new ProcessTimedOut instance because: "
-                    + e.getMessage());
+            throw new IllegalStateException("Error creating new ProcessTimedOut instance because: " + e.getMessage());
         }
 
         return processTimedOut;
@@ -288,9 +254,7 @@ public class TimeConstrainedProcessTracker extends AssertionConcern {
     }
 
     private void setTotalRetriesPermitted(int aTotalRetriesPermitted) {
-        this.assertArgumentTrue(
-                aTotalRetriesPermitted >= 0,
-                "Total retries must be greater than or equal to zero.");
+        this.assertArgumentTrue(aTotalRetriesPermitted >= 0, "Total retries must be greater than or equal to zero.");
 
         this.totalRetriesPermitted = aTotalRetriesPermitted;
     }

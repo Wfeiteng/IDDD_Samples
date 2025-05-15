@@ -63,9 +63,7 @@ public final class FullName extends AssertionConcern implements Serializable {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             FullName typedObject = (FullName) anObject;
-            equalObjects =
-                this.firstName().equals(typedObject.firstName()) &&
-                this.lastName().equals(typedObject.lastName());
+            equalObjects = this.firstName().equals(typedObject.firstName()) && this.lastName().equals(typedObject.lastName());
         }
 
         return equalObjects;
@@ -73,10 +71,7 @@ public final class FullName extends AssertionConcern implements Serializable {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (59151 * 191)
-            + this.firstName().hashCode()
-            + this.lastName().hashCode();
+        int hashCodeValue = +(59151 * 191) + this.firstName().hashCode() + this.lastName().hashCode();
 
         return hashCodeValue;
     }
@@ -93,9 +88,7 @@ public final class FullName extends AssertionConcern implements Serializable {
     private void setFirstName(String aFirstName) {
         this.assertArgumentNotEmpty(aFirstName, "First name is required.");
         this.assertArgumentLength(aFirstName, 1, 50, "First name must be 50 characters or less.");
-        this.assertArgumentTrue(
-                Pattern.matches("[A-Z][a-z]*", aFirstName),
-                "First name must be at least one character in length, starting with a capital letter.");
+        this.assertArgumentTrue(Pattern.matches("[A-Z][a-z]*", aFirstName), "First name must be at least one character in length, starting with a capital letter.");
 
         this.firstName = aFirstName;
     }
@@ -103,9 +96,7 @@ public final class FullName extends AssertionConcern implements Serializable {
     private void setLastName(String aLastName) {
         this.assertArgumentNotEmpty(aLastName, "The last name is required.");
         this.assertArgumentLength(aLastName, 1, 50, "The last name must be 50 characters or less.");
-        this.assertArgumentTrue(
-                Pattern.matches("^[a-zA-Z'][ a-zA-Z'-]*[a-zA-Z']?", aLastName),
-                "Last name must be at least one character in length.");
+        this.assertArgumentTrue(Pattern.matches("^[a-zA-Z'][ a-zA-Z'-]*[a-zA-Z']?", aLastName), "Last name must be at least one character in length.");
 
         this.lastName = aLastName;
     }

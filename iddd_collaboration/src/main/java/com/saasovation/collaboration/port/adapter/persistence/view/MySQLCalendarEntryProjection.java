@@ -31,18 +31,10 @@ import com.saasovation.common.event.sourcing.EventDispatcher;
 import com.saasovation.common.port.adapter.persistence.AbstractProjection;
 import com.saasovation.common.port.adapter.persistence.ConnectionProvider;
 
-public class MySQLCalendarEntryProjection
-        extends AbstractProjection
-        implements EventDispatcher {
+public class MySQLCalendarEntryProjection extends AbstractProjection implements EventDispatcher {
 
-    private static final Class<?> understoodEventTypes[] = {
-        CalendarEntryDescriptionChanged.class,
-        CalendarEntryParticipantInvited.class,
-        CalendarEntryParticipantUninvited.class,
-        CalendarEntryRelocated.class,
-        CalendarEntryRescheduled.class,
-        CalendarEntryScheduled.class
-    };
+    private static final Class<?> understoodEventTypes[] = {CalendarEntryDescriptionChanged.class, CalendarEntryParticipantInvited.class, CalendarEntryParticipantUninvited.class,
+                                                            CalendarEntryRelocated.class, CalendarEntryRescheduled.class, CalendarEntryScheduled.class};
 
     public MySQLCalendarEntryProjection(EventDispatcher aParentEventDispatcher) {
         super();
@@ -62,18 +54,13 @@ public class MySQLCalendarEntryProjection
 
     @Override
     public boolean understands(DispatchableDomainEvent aDispatchableDomainEvent) {
-        return this.understandsAnyOf(
-                aDispatchableDomainEvent.domainEvent().getClass(),
-                understoodEventTypes);
+        return this.understandsAnyOf(aDispatchableDomainEvent.domainEvent().getClass(), understoodEventTypes);
     }
 
     protected void when(CalendarEntryDescriptionChanged anEvent) throws Exception {
         Connection connection = ConnectionProvider.connection();
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "update tbl_vw_calendar_entry set description=? "
-                        + " where calendar_entry_id = ?");
+        PreparedStatement statement = connection.prepareStatement("update tbl_vw_calendar_entry set description=? " + " where calendar_entry_id = ?");
 
         statement.setString(1, anEvent.description());
         statement.setString(2, anEvent.calendarEntryId().id());
@@ -88,10 +75,8 @@ public class MySQLCalendarEntryProjection
     protected void when(CalendarEntryParticipantUninvited anEvent) throws Exception {
         Connection connection = ConnectionProvider.connection();
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "delete from tbl_vw_calendar_entry_invitee "
-                        + "where tenant_id = ? and calendar_entry_id = ? and participant_identity = ?");
+        PreparedStatement statement = connection.prepareStatement(
+                "delete from tbl_vw_calendar_entry_invitee " + "where tenant_id = ? and calendar_entry_id = ? and participant_identity = ?");
 
         statement.setString(1, anEvent.tenant().id());
         statement.setString(2, anEvent.calendarEntryId().id());
@@ -103,10 +88,7 @@ public class MySQLCalendarEntryProjection
     protected void when(CalendarEntryRelocated anEvent) throws Exception {
         Connection connection = ConnectionProvider.connection();
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "update tbl_vw_calendar_entry set location=? "
-                        + " where calendar_entry_id = ?");
+        PreparedStatement statement = connection.prepareStatement("update tbl_vw_calendar_entry set location=? " + " where calendar_entry_id = ?");
 
         statement.setString(1, anEvent.location());
         statement.setString(2, anEvent.calendarEntryId().id());
@@ -117,13 +99,8 @@ public class MySQLCalendarEntryProjection
     protected void when(CalendarEntryRescheduled anEvent) throws Exception {
         Connection connection = ConnectionProvider.connection();
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "update tbl_vw_calendar_entry "
-                        + "set alarm_alarm_units = ?, alarm_alarm_units_type = ?, "
-                        + "repetition_ends = ?, repetition_type = ?, "
-                        + "time_span_begins = ?, time_span_ends = ? "
-                        + " where tenant_id = ? and calendar_entry_id = ?");
+        PreparedStatement statement = connection.prepareStatement(
+                "update tbl_vw_calendar_entry " + "set alarm_alarm_units = ?, alarm_alarm_units_type = ?, " + "repetition_ends = ?, repetition_type = ?, " + "time_span_begins = ?, time_span_ends = ? " + " where tenant_id = ? and calendar_entry_id = ?");
 
         statement.setInt(1, anEvent.alarm().alarmUnits());
         statement.setString(2, anEvent.alarm().alarmUnitsType().name());
@@ -141,23 +118,13 @@ public class MySQLCalendarEntryProjection
         Connection connection = ConnectionProvider.connection();
 
         // idempotent operation
-        if (this.exists(
-                "select calendar_entry_id from tbl_vw_calendar_entry "
-                    + "where tenant_id = ? and calendar_entry_id = ?",
-                anEvent.tenant().id(),
-                anEvent.calendarEntryId().id())) {
+        if (this.exists("select calendar_entry_id from tbl_vw_calendar_entry " + "where tenant_id = ? and calendar_entry_id = ?", anEvent.tenant().id(),
+                        anEvent.calendarEntryId().id())) {
             return;
         }
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "insert into tbl_vw_calendar_entry( "
-                        + "calendar_entry_id, alarm_alarm_units, alarm_alarm_units_type, "
-                        + "calendar_id, description, location, "
-                        + "owner_email_address, owner_identity, owner_name, "
-                        + "repetition_ends, repetition_type, "
-                        + "tenant_id, time_span_begins, time_span_ends"
-                        + ") values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        PreparedStatement statement = connection.prepareStatement(
+                "insert into tbl_vw_calendar_entry( " + "calendar_entry_id, alarm_alarm_units, alarm_alarm_units_type, " + "calendar_id, description, location, " + "owner_email_address, owner_identity, owner_name, " + "repetition_ends, repetition_type, " + "tenant_id, time_span_begins, time_span_ends" + ") values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
         statement.setString(1, anEvent.calendarEntryId().id());
         statement.setInt(2, anEvent.alarm().alarmUnits());
@@ -181,31 +148,18 @@ public class MySQLCalendarEntryProjection
         }
     }
 
-    private void insertInvitee(
-            Tenant aTenant,
-            CalendarEntryId aCalendarEntryId,
-            Participant aParticipant)
-    throws Exception {
+    private void insertInvitee(Tenant aTenant, CalendarEntryId aCalendarEntryId, Participant aParticipant) throws Exception {
 
         Connection connection = ConnectionProvider.connection();
 
         // idempotent operation
-        if (this.exists(
-                "select id from tbl_vw_calendar_entry_invitee "
-                    + "where tenant_id = ? and calendar_entry_id = ? and participant_identity = ?",
-                aTenant.id(),
-                aCalendarEntryId.id(),
-                aParticipant.identity())) {
+        if (this.exists("select id from tbl_vw_calendar_entry_invitee " + "where tenant_id = ? and calendar_entry_id = ? and participant_identity = ?", aTenant.id(),
+                        aCalendarEntryId.id(), aParticipant.identity())) {
             return;
         }
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "insert into tbl_vw_calendar_entry_invitee( "
-                        + "id, calendar_entry_id, "
-                        + "participant_email_address, participant_identity, participant_name, "
-                        + "tenant_id"
-                        + ") values(?,?,?,?,?,?)");
+        PreparedStatement statement = connection.prepareStatement(
+                "insert into tbl_vw_calendar_entry_invitee( " + "id, calendar_entry_id, " + "participant_email_address, participant_identity, participant_name, " + "tenant_id" + ") values(?,?,?,?,?,?)");
 
         statement.setLong(1, 0);
         statement.setString(2, aCalendarEntryId.id());

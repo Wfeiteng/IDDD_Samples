@@ -43,9 +43,7 @@ public class EventStoreProvider {
 
     private void initializeLevelDB() {
         if (FOR_LEVELDB) {
-            this.eventStore =
-                    LevelDBEventStore
-                            .instance(this.getClass().getResource("/").getPath() + "/data/leveldb/iddd_collaboration_es");
+            this.eventStore = LevelDBEventStore.instance(this.getClass().getResource("/").getPath() + "/data/leveldb/iddd_collaboration_es");
         }
     }
 

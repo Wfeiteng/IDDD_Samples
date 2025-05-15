@@ -27,8 +27,7 @@ public abstract class EventSourcedRootEntity extends AssertionConcern {
 
     private static final String MUTATOR_METHOD_NAME = "when";
 
-    private static Map<String, Method> mutatorMethods =
-            new HashMap<String, Method>();
+    private static Map<String, Method> mutatorMethods = new HashMap<String, Method>();
 
     private List<DomainEvent> mutatingEvents;
     private int unmutatedVersion;
@@ -45,9 +44,7 @@ public abstract class EventSourcedRootEntity extends AssertionConcern {
         return this.unmutatedVersion;
     }
 
-    protected EventSourcedRootEntity(
-            List<DomainEvent> anEventStream,
-            int aStreamVersion) {
+    protected EventSourcedRootEntity(List<DomainEvent> anEventStream, int aStreamVersion) {
 
         this();
 
@@ -90,41 +87,17 @@ public abstract class EventSourcedRootEntity extends AssertionConcern {
 
         } catch (InvocationTargetException e) {
             if (e.getCause() != null) {
-                throw new RuntimeException(
-                        "Method "
-                                + MUTATOR_METHOD_NAME
-                                + "("
-                                + eventType.getSimpleName()
-                                + ") failed. See cause: "
-                                + e.getMessage(),
-                        e.getCause());
+                throw new RuntimeException("Method " + MUTATOR_METHOD_NAME + "(" + eventType.getSimpleName() + ") failed. See cause: " + e.getMessage(), e.getCause());
             }
 
-            throw new RuntimeException(
-                    "Method "
-                            + MUTATOR_METHOD_NAME
-                            + "("
-                            + eventType.getSimpleName()
-                            + ") failed. See cause: "
-                            + e.getMessage(),
-                    e);
+            throw new RuntimeException("Method " + MUTATOR_METHOD_NAME + "(" + eventType.getSimpleName() + ") failed. See cause: " + e.getMessage(), e);
 
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(
-                    "Method "
-                            + MUTATOR_METHOD_NAME
-                            + "("
-                            + eventType.getSimpleName()
-                            + ") failed because of illegal access. See cause: "
-                            + e.getMessage(),
-                    e);
+            throw new RuntimeException("Method " + MUTATOR_METHOD_NAME + "(" + eventType.getSimpleName() + ") failed because of illegal access. See cause: " + e.getMessage(), e);
         }
     }
 
-    private Method cacheMutatorMethodFor(
-            String aKey,
-            Class<? extends EventSourcedRootEntity> aRootType,
-            Class<? extends DomainEvent> anEventType) {
+    private Method cacheMutatorMethodFor(String aKey, Class<? extends EventSourcedRootEntity> aRootType, Class<? extends DomainEvent> anEventType) {
 
         synchronized (mutatorMethods) {
             try {
@@ -138,21 +111,13 @@ public abstract class EventSourcedRootEntity extends AssertionConcern {
 
             } catch (Exception e) {
                 throw new IllegalArgumentException(
-                        "I do not understand "
-                                + MUTATOR_METHOD_NAME
-                                + "("
-                                + anEventType.getSimpleName()
-                                + ") because: "
-                                + e.getClass().getSimpleName() + ">>>" + e.getMessage(),
+                        "I do not understand " + MUTATOR_METHOD_NAME + "(" + anEventType.getSimpleName() + ") because: " + e.getClass().getSimpleName() + ">>>" + e.getMessage(),
                         e);
             }
         }
     }
 
-    private Method hiddenOrPublicMethod(
-            Class<? extends EventSourcedRootEntity> aRootType,
-            Class<? extends DomainEvent> anEventType)
-    throws Exception {
+    private Method hiddenOrPublicMethod(Class<? extends EventSourcedRootEntity> aRootType, Class<? extends DomainEvent> anEventType) throws Exception {
 
         Method method = null;
 
@@ -160,17 +125,13 @@ public abstract class EventSourcedRootEntity extends AssertionConcern {
 
             // assume protected or private...
 
-            method = aRootType.getDeclaredMethod(
-                    MUTATOR_METHOD_NAME,
-                    anEventType);
+            method = aRootType.getDeclaredMethod(MUTATOR_METHOD_NAME, anEventType);
 
         } catch (Exception e) {
 
             // then public...
 
-            method = aRootType.getMethod(
-                    MUTATOR_METHOD_NAME,
-                    anEventType);
+            method = aRootType.getMethod(MUTATOR_METHOD_NAME, anEventType);
         }
 
         return method;

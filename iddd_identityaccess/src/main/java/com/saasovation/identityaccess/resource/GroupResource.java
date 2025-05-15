@@ -36,15 +36,10 @@ public class GroupResource extends AbstractResource {
 
     @GET
     @Path("{groupName}")
-    @Produces({ OvationsMediaType.ID_OVATION_TYPE })
-    public Response getGroup(
-            @PathParam("tenantId") String aTenantId,
-            @PathParam("groupName") String aGroupName,
-            @Context Request aRequest) {
+    @Produces({OvationsMediaType.ID_OVATION_TYPE})
+    public Response getGroup(@PathParam("tenantId") String aTenantId, @PathParam("groupName") String aGroupName, @Context Request aRequest) {
 
-        Group group =
-                this.identityApplicationService()
-                    .group(aTenantId, aGroupName);
+        Group group = this.identityApplicationService().group(aTenantId, aGroupName);
 
         if (group == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -55,19 +50,13 @@ public class GroupResource extends AbstractResource {
         return response;
     }
 
-    private Response groupResponse(
-            Request aRequest,
-            Group aGroup) {
+    private Response groupResponse(Request aRequest, Group aGroup) {
 
         Response response = null;
 
         String representation = ObjectSerializer.instance().serialize(aGroup);
 
-        response =
-            Response
-                .ok(representation)
-                .cacheControl(this.cacheControlFor(30))
-                .build();
+        response = Response.ok(representation).cacheControl(this.cacheControlFor(30)).build();
 
         return response;
     }

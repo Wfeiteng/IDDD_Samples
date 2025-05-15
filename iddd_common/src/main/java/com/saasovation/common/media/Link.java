@@ -25,11 +25,7 @@ public class Link {
         this(anHref, aRel, null, null);
     }
 
-    public Link(
-            String anHref,
-            String aRel,
-            String aTitle,
-            String aType) {
+    public Link(String anHref, String aRel, String aTitle, String aType) {
 
         this();
 
@@ -78,24 +74,16 @@ public class Link {
 
         StringBuilder builder = new StringBuilder();
 
-        builder
-            .append("<")
-            .append(this.getHref())
-            .append(">; rel=")
-            .append(this.getRel());
+        builder.append("<").append(this.getHref()).append(">; rel=").append(this.getRel());
 
         // title is optional
         if (this.getTitle() != null) {
-            builder
-                .append("; title=")
-                .append(this.getTitle());
+            builder.append("; title=").append(this.getTitle());
         }
 
         // per LINK extension, type is optionally permitted
         if (this.getType() != null) {
-            builder
-                .append("; type=")
-                .append(this.getType());
+            builder.append("; type=").append(this.getType());
         }
 
         return builder.toString();

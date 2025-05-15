@@ -37,19 +37,12 @@ public class RabbitMQEventDispatcher implements EventDispatcher {
 
     @Override
     public void dispatch(DispatchableDomainEvent aDispatchableDomainEvent) {
-        Notification notification =
-                new Notification(
-                        aDispatchableDomainEvent.eventId(),
-                        aDispatchableDomainEvent.domainEvent());
+        Notification notification = new Notification(aDispatchableDomainEvent.eventId(), aDispatchableDomainEvent.domainEvent());
 
-        MessageParameters messageParameters =
-                MessageParameters.durableTextParameters(
-                        notification.typeName(),
-                        Long.toString(notification.notificationId()),
-                        notification.occurredOn());
+        MessageParameters messageParameters = MessageParameters.durableTextParameters(notification.typeName(), Long.toString(notification.notificationId()),
+                                                                                      notification.occurredOn());
 
-        String serializedNotification =
-                NotificationSerializer.instance().serialize(notification);
+        String serializedNotification = NotificationSerializer.instance().serialize(notification);
 
         this.messageProducer.send(serializedNotification, messageParameters);
     }
@@ -65,11 +58,7 @@ public class RabbitMQEventDispatcher implements EventDispatcher {
     }
 
     private void initializeMessageProducer() {
-        Exchange exchange =
-                Exchange.fanOutInstance(
-                        ConnectionSettings.instance(),
-                        Exchanges.COLLABORATION_EXCHANGE_NAME,
-                        true);
+        Exchange exchange = Exchange.fanOutInstance(ConnectionSettings.instance(), Exchanges.COLLABORATION_EXCHANGE_NAME, true);
 
         this.messageProducer = MessageProducer.instance(exchange);
     }

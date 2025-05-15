@@ -30,9 +30,7 @@ public class Notification extends AssertionConcern implements Serializable {
     private String typeName;
     private int version;
 
-    public Notification(
-            long aNotificationId,
-            DomainEvent anEvent) {
+    public Notification(long aNotificationId, DomainEvent anEvent) {
 
         this();
 
@@ -78,18 +76,14 @@ public class Notification extends AssertionConcern implements Serializable {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (3017 * 197)
-            + (int) this.notificationId();
+        int hashCodeValue = +(3017 * 197) + (int) this.notificationId();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "Notification [event=" + event + ", notificationId=" + notificationId
-                + ", occurredOn=" + occurredOn + ", typeName="
-                + typeName + ", version=" + version + "]";
+        return "Notification [event=" + event + ", notificationId=" + notificationId + ", occurredOn=" + occurredOn + ", typeName=" + typeName + ", version=" + version + "]";
     }
 
     protected Notification() {

@@ -42,9 +42,7 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
         this.setCollaborationDataSource(aDataSource);
         this.setRegisteredDispatchers(new ArrayList<EventDispatcher>());
 
-        EventStoreProvider
-            .instance()
-            .eventStore().registerEventNotifiable(this);
+        EventStoreProvider.instance().eventStore().registerEventNotifiable(this);
 
         this.setLastDispatchedEventId(this.queryLastDispatchedEventId());
 
@@ -56,7 +54,7 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
         DomainEventPublisher.instance().publish(aDispatchableDomainEvent.domainEvent());
 
         for (EventDispatcher eventDispatcher : this.registeredDispatchers()) {
-           eventDispatcher.dispatch(aDispatchableDomainEvent);
+            eventDispatcher.dispatch(aDispatchableDomainEvent);
         }
     }
 
@@ -71,16 +69,10 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
         // not commit. i will commit and close the
         // connection here
 
-        Connection connection =
-                ConnectionProvider
-                    .connection(this.collaborationDataSource());
+        Connection connection = ConnectionProvider.connection(this.collaborationDataSource());
 
         try {
-            List<DispatchableDomainEvent> undispatchedEvents =
-                    EventStoreProvider
-                        .instance()
-                        .eventStore()
-                        .eventsSince(this.lastDispatchedEventId());
+            List<DispatchableDomainEvent> undispatchedEvents = EventStoreProvider.instance().eventStore().eventsSince(this.lastDispatchedEventId());
 
             if (!undispatchedEvents.isEmpty()) {
 
@@ -88,8 +80,7 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
                     this.dispatch(event);
                 }
 
-                DispatchableDomainEvent withLastEventId =
-                        undispatchedEvents.get(undispatchedEvents.size() - 1);
+                DispatchableDomainEvent withLastEventId = undispatchedEvents.get(undispatchedEvents.size() - 1);
 
                 long lastDispatchedEventId = withLastEventId.eventId();
 
@@ -157,14 +148,9 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
         Connection connection = null;
 
         try {
-            connection =
-                    ConnectionProvider
-                        .connection(this.collaborationDataSource());
+            connection = ConnectionProvider.connection(this.collaborationDataSource());
         } catch (Throwable t) {
-            throw new IllegalStateException(
-                    "Cannot acquire database connection because: "
-                            + t.getMessage(),
-                    t);
+            throw new IllegalStateException("Cannot acquire database connection because: " + t.getMessage(), t);
         }
 
         return connection;
@@ -187,9 +173,7 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
         PreparedStatement statement = null;
 
         try {
-            statement =
-                    connection.prepareStatement(
-                            "select max(event_id) from tbl_dispatcher_last_event");
+            statement = connection.prepareStatement("select max(event_id) from tbl_dispatcher_last_event");
 
             result = statement.executeQuery();
 
@@ -202,10 +186,7 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
             connection.commit();
 
         } catch (Exception e) {
-            throw new IllegalStateException(
-                    "Cannot query last dispatched event because: "
-                        + e.getMessage(),
-                    e);
+            throw new IllegalStateException("Cannot query last dispatched event because: " + e.getMessage(), e);
         } finally {
             this.close(statement, result);
         }
@@ -213,18 +194,14 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
         return lastHandledEventId;
     }
 
-    private void saveLastDispatchedEventId(
-            Connection aConnection,
-            long aLastDispatchedEventId)
-    throws Exception {
+    private void saveLastDispatchedEventId(Connection aConnection, long aLastDispatchedEventId) throws Exception {
 
         int updated = 0;
 
         PreparedStatement statement = null;
 
         try {
-            statement = aConnection.prepareStatement(
-                    "update tbl_dispatcher_last_event set event_id=?");
+            statement = aConnection.prepareStatement("update tbl_dispatcher_last_event set event_id=?");
             statement.setLong(1, aLastDispatchedEventId);
             updated = statement.executeUpdate();
 
@@ -237,8 +214,7 @@ public class FollowStoreEventDispatcher implements EventDispatcher, EventNotifia
         if (updated == 0) {
 
             try {
-                statement = aConnection.prepareStatement(
-                        "insert into tbl_dispatcher_last_event values(?)");
+                statement = aConnection.prepareStatement("insert into tbl_dispatcher_last_event values(?)");
                 statement.setLong(1, aLastDispatchedEventId);
                 statement.executeUpdate();
 

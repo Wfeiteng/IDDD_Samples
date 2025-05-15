@@ -29,14 +29,11 @@ public class PublishedNotificationTracker extends AssertionConcern implements Se
 
     public PublishedNotificationTracker(String aTypeName) {
         this();
-
         this.setTypeName(aTypeName);
     }
 
     public void failWhenConcurrencyViolation(int aVersion) {
-        this.assertStateTrue(
-                aVersion == this.concurrencyVersion(),
-                "Concurrency Violation: Stale data detected. Entity was already modified.");
+        this.assertStateTrue(aVersion == this.concurrencyVersion(), "Concurrency Violation: Stale data detected. Entity was already modified.");
     }
 
     public long mostRecentPublishedNotificationId() {
@@ -61,10 +58,8 @@ public class PublishedNotificationTracker extends AssertionConcern implements Se
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             PublishedNotificationTracker typedObject = (PublishedNotificationTracker) anObject;
-            equalObjects =
-                this.publishedNotificationTrackerId() == typedObject.publishedNotificationTrackerId() &&
-                this.typeName().equals(typedObject.typeName()) &&
-                this.mostRecentPublishedNotificationId() == typedObject.mostRecentPublishedNotificationId();
+            equalObjects = this.publishedNotificationTrackerId() == typedObject.publishedNotificationTrackerId() && this.typeName().equals(
+                    typedObject.typeName()) && this.mostRecentPublishedNotificationId() == typedObject.mostRecentPublishedNotificationId();
         }
 
         return equalObjects;
@@ -72,19 +67,14 @@ public class PublishedNotificationTracker extends AssertionConcern implements Se
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (11575 * 241)
-            + (int) this.publishedNotificationTrackerId()
-            + (int) this.mostRecentPublishedNotificationId()
-            + this.typeName().hashCode();
+        int hashCodeValue = +(11575 * 241) + (int) this.publishedNotificationTrackerId() + (int) this.mostRecentPublishedNotificationId() + this.typeName().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "PublishedNotificationTracker [mostRecentPublishedNotificationId=" + mostRecentPublishedNotificationId
-                + ", publishedNotificationTrackerId=" + publishedNotificationTrackerId + ", typeName=" + typeName + "]";
+        return "PublishedNotificationTracker [mostRecentPublishedNotificationId=" + mostRecentPublishedNotificationId + ", publishedNotificationTrackerId=" + publishedNotificationTrackerId + ", typeName=" + typeName + "]";
     }
 
     protected PublishedNotificationTracker() {

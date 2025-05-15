@@ -28,9 +28,7 @@ public class MD5EncryptionService extends AssertionConcern implements Encryption
 
     @Override
     public String encryptedValue(String aPlainTextValue) {
-        this.assertArgumentNotEmpty(
-                aPlainTextValue,
-                "Plain text value to encrypt must be provided.");
+        this.assertArgumentNotEmpty(aPlainTextValue, "Plain text value to encrypt must be provided.");
 
         String encryptedValue = null;
 

@@ -25,15 +25,9 @@ import com.saasovation.common.event.sourcing.EventDispatcher;
 import com.saasovation.common.port.adapter.persistence.AbstractProjection;
 import com.saasovation.common.port.adapter.persistence.ConnectionProvider;
 
-public class MySQLDiscussionProjection
-        extends AbstractProjection
-        implements EventDispatcher {
+public class MySQLDiscussionProjection extends AbstractProjection implements EventDispatcher {
 
-    private static final Class<?> understoodEventTypes[] = {
-        DiscussionClosed.class,
-        DiscussionReopened.class,
-        DiscussionStarted.class
-    };
+    private static final Class<?> understoodEventTypes[] = {DiscussionClosed.class, DiscussionReopened.class, DiscussionStarted.class};
 
     public MySQLDiscussionProjection(EventDispatcher aParentEventDispatcher) {
         super();
@@ -53,19 +47,13 @@ public class MySQLDiscussionProjection
 
     @Override
     public boolean understands(DispatchableDomainEvent aDispatchableDomainEvent) {
-        return this.understandsAnyOf(
-                aDispatchableDomainEvent.domainEvent().getClass(),
-                understoodEventTypes);
+        return this.understandsAnyOf(aDispatchableDomainEvent.domainEvent().getClass(), understoodEventTypes);
     }
 
     protected void when(DiscussionClosed anEvent) throws Exception {
         Connection connection = ConnectionProvider.connection();
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "update tbl_vw_discussion "
-                        + "set closed=1 "
-                        + "where tenant_id = ? and discussion_id = ?");
+        PreparedStatement statement = connection.prepareStatement("update tbl_vw_discussion " + "set closed=1 " + "where tenant_id = ? and discussion_id = ?");
 
         statement.setString(1, anEvent.tenant().id());
         statement.setString(2, anEvent.discussionId().id());
@@ -76,11 +64,7 @@ public class MySQLDiscussionProjection
     protected void when(DiscussionReopened anEvent) throws Exception {
         Connection connection = ConnectionProvider.connection();
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "update tbl_vw_discussion "
-                        + "set closed=0 "
-                        + "where tenant_id = ? and discussion_id = ?");
+        PreparedStatement statement = connection.prepareStatement("update tbl_vw_discussion " + "set closed=0 " + "where tenant_id = ? and discussion_id = ?");
 
         statement.setString(1, anEvent.tenant().id());
         statement.setString(2, anEvent.discussionId().id());
@@ -92,21 +76,12 @@ public class MySQLDiscussionProjection
         Connection connection = ConnectionProvider.connection();
 
         // idempotent operation
-        if (this.exists(
-                "select discussion_id from tbl_vw_discussion "
-                    + "where tenant_id = ? and discussion_id = ?",
-                anEvent.tenant().id(),
-                anEvent.discussionId().id())) {
+        if (this.exists("select discussion_id from tbl_vw_discussion " + "where tenant_id = ? and discussion_id = ?", anEvent.tenant().id(), anEvent.discussionId().id())) {
             return;
         }
 
-        PreparedStatement statement =
-                connection.prepareStatement(
-                        "insert into tbl_vw_discussion( "
-                        + "discussion_id, author_email_address, author_identity, author_name, "
-                        + "closed, exclusive_owner, forum_id, "
-                        + "subject, tenant_id"
-                        + ") values(?,?,?,?,?,?,?,?,?)");
+        PreparedStatement statement = connection.prepareStatement(
+                "insert into tbl_vw_discussion( " + "discussion_id, author_email_address, author_identity, author_name, " + "closed, exclusive_owner, forum_id, " + "subject, tenant_id" + ") values(?,?,?,?,?,?,?,?,?)");
 
         statement.setString(1, anEvent.discussionId().id());
         statement.setString(2, anEvent.author().emailAddress());

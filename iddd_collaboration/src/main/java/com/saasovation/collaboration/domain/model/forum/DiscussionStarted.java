@@ -31,13 +31,7 @@ public class DiscussionStarted implements DomainEvent {
     private String subject;
     private Tenant tenant;
 
-    public DiscussionStarted(
-            Tenant aTenant,
-            ForumId aForumId,
-            DiscussionId aDiscussionId,
-            Author anAuthor,
-            String aSubject,
-            String anExclusiveOwner) {
+    public DiscussionStarted(Tenant aTenant, ForumId aForumId, DiscussionId aDiscussionId, Author anAuthor, String aSubject, String anExclusiveOwner) {
 
         super();
 

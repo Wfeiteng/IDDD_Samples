@@ -23,14 +23,9 @@ public class PersistenceManagerProvider {
 
     private Session hibernateSession;
 
-    public static PersistenceManagerProvider forHibernateSessionNamed(
-            String aHibernateSessionFactoryName) {
+    public static PersistenceManagerProvider forHibernateSessionNamed(String aHibernateSessionFactoryName) {
 
-        SessionFactory sessionFactory = (SessionFactory)
-                ApplicationContextProvider
-                    .instance()
-                    .applicationContext()
-                    .getBean(aHibernateSessionFactoryName);
+        SessionFactory sessionFactory = (SessionFactory) ApplicationContextProvider.instance().applicationContext().getBean(aHibernateSessionFactoryName);
 
         return new PersistenceManagerProvider(sessionFactory.openSession());
     }

@@ -37,11 +37,7 @@ public class Role extends ConcurrencySafeEntity {
         this(aTenantId, aName, aDescription, false);
     }
 
-    public Role(
-            TenantId aTenantId,
-            String aName,
-            String aDescription,
-            boolean aSupportsNesting) {
+    public Role(TenantId aTenantId, String aName, String aDescription, boolean aSupportsNesting) {
 
         this();
 
@@ -60,12 +56,7 @@ public class Role extends ConcurrencySafeEntity {
 
         this.group().addGroup(aGroup, aGroupMemberService);
 
-        DomainEventPublisher
-            .instance()
-            .publish(new GroupAssignedToRole(
-                    this.tenantId(),
-                    this.name(),
-                    aGroup.name()));
+        DomainEventPublisher.instance().publish(new GroupAssignedToRole(this.tenantId(), this.name(), aGroup.name()));
     }
 
     public void assignUser(User aUser) {
@@ -77,15 +68,9 @@ public class Role extends ConcurrencySafeEntity {
         // NOTE: Consider what a consuming Bounded Context would
         // need to do if this event was not enriched with the
         // last three user person properties. (Hint: A lot.)
-        DomainEventPublisher
-            .instance()
-            .publish(new UserAssignedToRole(
-                    this.tenantId(),
-                    this.name(),
-                    aUser.username(),
-                    aUser.person().name().firstName(),
-                    aUser.person().name().lastName(),
-                    aUser.person().emailAddress().address()));
+        DomainEventPublisher.instance().publish(
+                new UserAssignedToRole(this.tenantId(), this.name(), aUser.username(), aUser.person().name().firstName(), aUser.person().name().lastName(),
+                                       aUser.person().emailAddress().address()));
     }
 
     public String description() {
@@ -115,12 +100,7 @@ public class Role extends ConcurrencySafeEntity {
 
         this.group().removeGroup(aGroup);
 
-        DomainEventPublisher
-            .instance()
-            .publish(new GroupUnassignedFromRole(
-                    this.tenantId(),
-                    this.name(),
-                    aGroup.name()));
+        DomainEventPublisher.instance().publish(new GroupUnassignedFromRole(this.tenantId(), this.name(), aGroup.name()));
     }
 
     public void unassignUser(User aUser) {
@@ -129,12 +109,7 @@ public class Role extends ConcurrencySafeEntity {
 
         this.group().removeUser(aUser);
 
-        DomainEventPublisher
-            .instance()
-            .publish(new UserUnassignedFromRole(
-                    this.tenantId(),
-                    this.name(),
-                    aUser.username()));
+        DomainEventPublisher.instance().publish(new UserUnassignedFromRole(this.tenantId(), this.name(), aUser.username()));
     }
 
     @Override
@@ -143,9 +118,7 @@ public class Role extends ConcurrencySafeEntity {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             Role typedObject = (Role) anObject;
-            equalObjects =
-                this.tenantId().equals(typedObject.tenantId()) &&
-                this.name().equals(typedObject.name());
+            equalObjects = this.tenantId().equals(typedObject.tenantId()) && this.name().equals(typedObject.name());
         }
 
         return equalObjects;
@@ -153,19 +126,14 @@ public class Role extends ConcurrencySafeEntity {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (18723 * 233)
-            + this.tenantId().hashCode()
-            + this.name().hashCode();
+        int hashCodeValue = +(18723 * 233) + this.tenantId().hashCode() + this.name().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "Role [tenantId=" + tenantId + ", name=" + name
-                + ", description=" + description + ", supportsNesting="
-                + supportsNesting + ", group=" + group + "]";
+        return "Role [tenantId=" + tenantId + ", name=" + name + ", description=" + description + ", supportsNesting=" + supportsNesting + ", group=" + group + "]";
     }
 
     protected Role() {
@@ -173,14 +141,9 @@ public class Role extends ConcurrencySafeEntity {
     }
 
     protected void createInternalGroup() {
-        String groupName =
-                Group.ROLE_GROUP_PREFIX
-                + UUID.randomUUID().toString().toUpperCase();
+        String groupName = Group.ROLE_GROUP_PREFIX + UUID.randomUUID().toString().toUpperCase();
 
-        this.setGroup(new Group(
-                this.tenantId(),
-                groupName,
-                "Role backing group for: " + this.name()));
+        this.setGroup(new Group(this.tenantId(), groupName, "Role backing group for: " + this.name()));
     }
 
     protected void setDescription(String aDescription) {

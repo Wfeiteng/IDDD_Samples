@@ -50,22 +50,22 @@ public class ForumQueryService extends AbstractQueryService {
         return this.queryObject(
                 ForumDiscussionsData.class,
                 "select "
-                +  "forum.closed, forum.creator_email_address, forum.creator_identity, "
-                +  "forum.creator_name, forum.description, forum.exclusive_owner, forum.forum_id, "
-                +  "forum.moderator_email_address, forum.moderator_identity, forum.moderator_name, "
-                +  "forum.subject, forum.tenant_id, "
-                +  "disc.author_email_address as o_discussions_author_email_address, "
-                +  "disc.author_identity as o_discussions_author_identity, "
-                +  "disc.author_name as o_discussions_author_name, "
-                +  "disc.closed as o_discussions_closed, "
-                +  "disc.discussion_id as o_discussions_discussion_id, "
-                +  "disc.exclusive_owner as o_discussions_exclusive_owner, "
-                +  "disc.forum_id as o_discussions_forum_id, "
-                +  "disc.subject as o_discussions_subject, "
-                +  "disc.tenant_id as o_discussions_tenant_id "
-                + "from tbl_vw_forum as forum left outer join tbl_vw_discussion as disc "
-                + " on forum.forum_id = disc.forum_id "
-                + "where (forum.tenant_id = ? and forum.forum_id = ?)",
+                        + "forum.closed, forum.creator_email_address, forum.creator_identity, "
+                        + "forum.creator_name, forum.description, forum.exclusive_owner, forum.forum_id, "
+                        + "forum.moderator_email_address, forum.moderator_identity, forum.moderator_name, "
+                        + "forum.subject, forum.tenant_id, "
+                        + "disc.author_email_address as o_discussions_author_email_address, "
+                        + "disc.author_identity as o_discussions_author_identity, "
+                        + "disc.author_name as o_discussions_author_name, "
+                        + "disc.closed as o_discussions_closed, "
+                        + "disc.discussion_id as o_discussions_discussion_id, "
+                        + "disc.exclusive_owner as o_discussions_exclusive_owner, "
+                        + "disc.forum_id as o_discussions_forum_id, "
+                        + "disc.subject as o_discussions_subject, "
+                        + "disc.tenant_id as o_discussions_tenant_id "
+                        + "from tbl_vw_forum as forum left outer join tbl_vw_discussion as disc "
+                        + " on forum.forum_id = disc.forum_id "
+                        + "where (forum.tenant_id = ? and forum.forum_id = ?)",
                 new JoinOn("forum_id", "o_discussions_forum_id"),
                 aTenantId,
                 aForumId);

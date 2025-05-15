@@ -33,7 +33,6 @@ public class MySQLPostProjection extends AbstractProjection implements EventDisp
 
     public MySQLPostProjection(EventDispatcher aParentEventDispatcher) {
         super();
-
         aParentEventDispatcher.registerEventDispatcher(this);
     }
 

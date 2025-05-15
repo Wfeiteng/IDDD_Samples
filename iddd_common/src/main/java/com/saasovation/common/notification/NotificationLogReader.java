@@ -28,9 +28,7 @@ import com.saasovation.common.media.AbstractJSONMediaReader;
 import com.saasovation.common.media.Link;
 import com.saasovation.common.media.RepresentationReader;
 
-public class NotificationLogReader
-       extends AbstractJSONMediaReader
-       implements List<NotificationReader>, Iterable<NotificationReader> {
+public class NotificationLogReader extends AbstractJSONMediaReader implements List<NotificationReader>, Iterable<NotificationReader> {
 
     private JsonArray array;
 
@@ -86,7 +84,8 @@ public class NotificationLogReader
 
     ///////////////////////////////////////////////
     // Iterable and Collection implementations
-    ///////////////////////////////////////////////
+
+    /// ////////////////////////////////////////////
 
     @Override
     public Iterator<NotificationReader> iterator() {
@@ -169,8 +168,7 @@ public class NotificationLogReader
     public NotificationReader get(int index) {
         JsonElement element = this.array.get(index);
 
-        NotificationReader reader =
-                new NotificationReader(element.getAsJsonObject());
+        NotificationReader reader = new NotificationReader(element.getAsJsonObject());
 
         return reader;
     }
@@ -235,12 +233,7 @@ public class NotificationLogReader
         if (linkElement.isJsonObject()) {
             RepresentationReader rep = new RepresentationReader(linkElement.getAsJsonObject());
 
-            link =
-                    new Link(
-                            rep.stringValue("href"),
-                            rep.stringValue("rel"),
-                            rep.stringValue("title"),
-                            rep.stringValue("type"));
+            link = new Link(rep.stringValue("href"), rep.stringValue("rel"), rep.stringValue("title"), rep.stringValue("type"));
         }
 
         return link;

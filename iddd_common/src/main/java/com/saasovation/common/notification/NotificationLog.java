@@ -26,12 +26,8 @@ public class NotificationLog {
     private String nextNotificationLogId;
     private String previousNotificationLogId;
 
-    public NotificationLog(
-            String aNotificationLogId,
-            String aNextNotificationLogId,
-            String aPreviousNotificationLogId,
-            List<Notification> aNotifications,
-            boolean anArchivedIndicator) {
+    public NotificationLog(String aNotificationLogId, String aNextNotificationLogId, String aPreviousNotificationLogId, List<Notification> aNotifications,
+                           boolean anArchivedIndicator) {
 
         super();
 

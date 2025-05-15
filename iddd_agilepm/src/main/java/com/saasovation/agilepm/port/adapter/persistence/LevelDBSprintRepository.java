@@ -28,9 +28,7 @@ import com.saasovation.common.port.adapter.persistence.leveldb.AbstractLevelDBRe
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBKey;
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBUnitOfWork;
 
-public class LevelDBSprintRepository
-        extends AbstractLevelDBRepository
-        implements SprintRepository {
+public class LevelDBSprintRepository extends AbstractLevelDBRepository implements SprintRepository {
 
     private static final String PRIMARY = "SPRINT#PK";
     private static final String PRODUCT_RELEASES = "SPRINT#PR";
@@ -69,9 +67,7 @@ public class LevelDBSprintRepository
     public Sprint sprintOfId(TenantId aTenantId, SprintId aSprintId) {
         LevelDBKey primaryKey = new LevelDBKey(PRIMARY, aTenantId.id(), aSprintId.id());
 
-        Sprint sprint =
-                LevelDBUnitOfWork.readOnly(this.database())
-                    .readObject(primaryKey.key().getBytes(), Sprint.class);
+        Sprint sprint = LevelDBUnitOfWork.readOnly(this.database()).readObject(primaryKey.key().getBytes(), Sprint.class);
 
         return sprint;
     }

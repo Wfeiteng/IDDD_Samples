@@ -38,79 +38,54 @@ public class NotificationResource extends AbstractResource {
     }
 
     @GET
-    @Produces({ OvationsMediaType.ID_OVATION_TYPE })
-    public Response getCurrentNotificationLog(
-            @Context UriInfo aUriInfo) {
+    @Produces({OvationsMediaType.ID_OVATION_TYPE})
+    public Response getCurrentNotificationLog(@Context UriInfo aUriInfo) {
 
-        NotificationLog currentNotificationLog =
-            this.notificationApplicationService()
-                .currentNotificationLog();
+        NotificationLog currentNotificationLog = this.notificationApplicationService().currentNotificationLog();
 
         if (currentNotificationLog == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        Response response =
-            this.currentNotificationLogResponse(
-                    currentNotificationLog,
-                    aUriInfo);
+        Response response = this.currentNotificationLogResponse(currentNotificationLog, aUriInfo);
 
         return response;
     }
 
     @GET
     @Path("{notificationId}")
-    @Produces({ OvationsMediaType.ID_OVATION_TYPE })
-    public Response getNotificationLog(
-            @PathParam("notificationId") String aNotificationId,
-            @Context UriInfo aUriInfo) {
+    @Produces({OvationsMediaType.ID_OVATION_TYPE})
+    public Response getNotificationLog(@PathParam("notificationId") String aNotificationId, @Context UriInfo aUriInfo) {
 
-        NotificationLog notificationLog =
-            this.notificationApplicationService()
-                .notificationLog(aNotificationId);
+        NotificationLog notificationLog = this.notificationApplicationService().notificationLog(aNotificationId);
 
         if (notificationLog == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
-        Response response =
-            this.notificationLogResponse(
-                    notificationLog,
-                    aUriInfo);
+        Response response = this.notificationLogResponse(notificationLog, aUriInfo);
 
         return response;
     }
 
-    private Response currentNotificationLogResponse(
-            NotificationLog aCurrentNotificationLog,
-            UriInfo aUriInfo) {
+    private Response currentNotificationLogResponse(NotificationLog aCurrentNotificationLog, UriInfo aUriInfo) {
 
-        NotificationLogRepresentation log =
-            new NotificationLogRepresentation(aCurrentNotificationLog);
+        NotificationLogRepresentation log = new NotificationLogRepresentation(aCurrentNotificationLog);
 
-        log.setLinkSelf(
-                this.selfLink(aCurrentNotificationLog, aUriInfo));
+        log.setLinkSelf(this.selfLink(aCurrentNotificationLog, aUriInfo));
 
-        log.setLinkPrevious(
-            this.previousLink(aCurrentNotificationLog, aUriInfo));
+        log.setLinkPrevious(this.previousLink(aCurrentNotificationLog, aUriInfo));
 
         String serializedLog = ObjectSerializer.instance().serialize(log);
 
-        Response response =
-            Response
-                .ok(serializedLog)
-                .cacheControl(this.cacheControlFor(60))
-                .build();
+        Response response = Response.ok(serializedLog).cacheControl(this.cacheControlFor(60)).build();
 
         return response;
     }
 
-    private Response notificationLogResponse(
-            NotificationLog aNotificationLog,
-            UriInfo aUriInfo) {
+    private Response notificationLogResponse(NotificationLog aNotificationLog, UriInfo aUriInfo) {
 
-        NotificationLogRepresentation log =
-            new NotificationLogRepresentation(aNotificationLog);
+        NotificationLogRepresentation log = new NotificationLogRepresentation(aNotificationLog);
 
         log.setLinkSelf(this.selfLink(aNotificationLog, aUriInfo));
 
@@ -120,19 +95,12 @@ public class NotificationResource extends AbstractResource {
 
         String serializedLog = ObjectSerializer.instance().serialize(log);
 
-        Response response =
-            Response
-                .ok(serializedLog)
-                .cacheControl(this.cacheControlFor(3600))
-                .build();
+        Response response = Response.ok(serializedLog).cacheControl(this.cacheControlFor(3600)).build();
 
         return response;
     }
 
-    private Link linkFor(
-            String aRelationship,
-            String anId,
-            UriInfo aUriInfo) {
+    private Link linkFor(String aRelationship, String anId, UriInfo aUriInfo) {
 
         Link link = null;
 
@@ -140,51 +108,24 @@ public class NotificationResource extends AbstractResource {
 
             UriBuilder builder = aUriInfo.getBaseUriBuilder();
 
-            String linkUrl =
-                builder
-                    .path("notifications")
-                    .path(anId)
-                    .build()
-                    .toString();
+            String linkUrl = builder.path("notifications").path(anId).build().toString();
 
-            link = new Link(
-                    linkUrl,
-                    aRelationship,
-                    null,
-                    OvationsMediaType.ID_OVATION_TYPE);
+            link = new Link(linkUrl, aRelationship, null, OvationsMediaType.ID_OVATION_TYPE);
         }
 
         return link;
     }
 
-    private Link nextLink(
-            NotificationLog aNotificationLog,
-            UriInfo aUriInfo) {
-        return
-            this.linkFor(
-                    "next",
-                    aNotificationLog.nextNotificationLogId(),
-                    aUriInfo);
+    private Link nextLink(NotificationLog aNotificationLog, UriInfo aUriInfo) {
+        return this.linkFor("next", aNotificationLog.nextNotificationLogId(), aUriInfo);
     }
 
-    private Link previousLink(
-            NotificationLog aNotificationLog,
-            UriInfo aUriInfo) {
+    private Link previousLink(NotificationLog aNotificationLog, UriInfo aUriInfo) {
 
-        return
-            this.linkFor(
-                    "previous",
-                    aNotificationLog.previousNotificationLogId(),
-                    aUriInfo);
+        return this.linkFor("previous", aNotificationLog.previousNotificationLogId(), aUriInfo);
     }
 
-    private Link selfLink(
-            NotificationLog aNotificationLog,
-            UriInfo aUriInfo) {
-        return
-            this.linkFor(
-                    "self",
-                    aNotificationLog.notificationLogId(),
-                    aUriInfo);
+    private Link selfLink(NotificationLog aNotificationLog, UriInfo aUriInfo) {
+        return this.linkFor("self", aNotificationLog.notificationLogId(), aUriInfo);
     }
 }

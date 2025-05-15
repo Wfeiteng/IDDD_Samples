@@ -43,8 +43,7 @@ public class DomainEventPublisher {
 
                 Class<?> eventType = aDomainEvent.getClass();
 
-                @SuppressWarnings("unchecked")
-                List<DomainEventSubscriber<T>> allSubscribers = this.subscribers();
+                @SuppressWarnings("unchecked") List<DomainEventSubscriber<T>> allSubscribers = this.subscribers();
 
                 for (DomainEventSubscriber<T> subscriber : allSubscribers) {
                     Class<?> subscribedToType = subscriber.subscribedToEventType();

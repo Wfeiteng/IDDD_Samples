@@ -20,13 +20,7 @@ import com.saasovation.agilepm.domain.model.tenant.TenantId;
 
 public class ProductOwner extends Member {
 
-    public ProductOwner(
-            TenantId aTenantId,
-            String aUsername,
-            String aFirstName,
-            String aLastName,
-            String anEmailAddress,
-            Date anInitializedOn) {
+    public ProductOwner(TenantId aTenantId, String aUsername, String aFirstName, String aLastName, String anEmailAddress, Date anInitializedOn) {
 
         super(aTenantId, aUsername, aFirstName, aLastName, anEmailAddress, anInitializedOn);
     }
@@ -41,9 +35,7 @@ public class ProductOwner extends Member {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             ProductOwner typedObject = (ProductOwner) anObject;
-            equalObjects =
-                this.tenantId().equals(typedObject.tenantId()) &&
-                this.username().equals(typedObject.username());
+            equalObjects = this.tenantId().equals(typedObject.tenantId()) && this.username().equals(typedObject.username());
         }
 
         return equalObjects;
@@ -51,19 +43,14 @@ public class ProductOwner extends Member {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (71121 * 79)
-            + this.tenantId().hashCode()
-            + this.username().hashCode();
+        int hashCodeValue = +(71121 * 79) + this.tenantId().hashCode() + this.username().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "ProductOwner [productOwnerId()=" + productOwnerId() + ", emailAddress()=" + emailAddress() + ", isEnabled()="
-                + isEnabled() + ", firstName()=" + firstName() + ", lastName()=" + lastName() + ", tenantId()=" + tenantId()
-                + ", username()=" + username() + "]";
+        return "ProductOwner [productOwnerId()=" + productOwnerId() + ", emailAddress()=" + emailAddress() + ", isEnabled()=" + isEnabled() + ", firstName()=" + firstName() + ", lastName()=" + lastName() + ", tenantId()=" + tenantId() + ", username()=" + username() + "]";
     }
 
     protected ProductOwner() {

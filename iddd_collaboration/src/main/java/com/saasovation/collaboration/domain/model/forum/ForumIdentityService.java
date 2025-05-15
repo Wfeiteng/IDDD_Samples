@@ -21,10 +21,7 @@ public class ForumIdentityService {
     private ForumRepository forumRepository;
     private PostRepository postRepository;
 
-    public ForumIdentityService(
-            ForumRepository aForumRepository,
-            DiscussionRepository aDiscussionRepository,
-            PostRepository aPostRepository) {
+    public ForumIdentityService(ForumRepository aForumRepository, DiscussionRepository aDiscussionRepository, PostRepository aPostRepository) {
 
         super();
 

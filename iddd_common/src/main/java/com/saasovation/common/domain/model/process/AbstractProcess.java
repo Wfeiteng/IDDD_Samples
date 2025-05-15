@@ -32,10 +32,7 @@ public abstract class AbstractProcess extends Entity implements Process {
     private Date timedOutDate;
     private int totalRetriesPermitted;
 
-    public AbstractProcess(
-            String aTenantId,
-            ProcessId aProcessId,
-            String aDescription) {
+    public AbstractProcess(String aTenantId, ProcessId aProcessId, String aDescription) {
 
         super();
 
@@ -46,23 +43,14 @@ public abstract class AbstractProcess extends Entity implements Process {
         this.setTenantId(aTenantId);
     }
 
-    public AbstractProcess(
-            String aTenantId,
-            ProcessId aProcessId,
-            String aDescription,
-            long anAllowableDuration) {
+    public AbstractProcess(String aTenantId, ProcessId aProcessId, String aDescription, long anAllowableDuration) {
 
         this(aTenantId, aProcessId, aDescription);
 
         this.setAllowableDuration(anAllowableDuration);
     }
 
-    public AbstractProcess(
-            String aTenantId,
-            ProcessId aProcessId,
-            String aDescription,
-            long anAllowableDuration,
-            int aTotalRetriesPermitted) {
+    public AbstractProcess(String aTenantId, ProcessId aProcessId, String aDescription, long anAllowableDuration, int aTotalRetriesPermitted) {
 
         this(aTenantId, aProcessId, aDescription, anAllowableDuration);
 
@@ -95,16 +83,12 @@ public abstract class AbstractProcess extends Entity implements Process {
     }
 
     public void failWhenConcurrencyViolation(int aVersion) {
-        this.assertStateTrue(
-                aVersion == this.concurrencyVersion(),
-                "Concurrency Violation: Stale data detected. Entity was already modified.");
+        this.assertStateTrue(aVersion == this.concurrencyVersion(), "Concurrency Violation: Stale data detected. Entity was already modified.");
     }
 
     @Override
     public void informTimeout(Date aTimedOutDate) {
-        this.assertStateTrue(
-                this.hasProcessTimedOut(aTimedOutDate),
-                "The date " + aTimedOutDate + " does not indicate a valid timeout.");
+        this.assertStateTrue(this.hasProcessTimedOut(aTimedOutDate), "The date " + aTimedOutDate + " does not indicate a valid timeout.");
 
         this.setProcessCompletionType(ProcessCompletionType.TimedOut);
         this.setTimedOutDate(aTimedOutDate);
@@ -148,15 +132,8 @@ public abstract class AbstractProcess extends Entity implements Process {
     public TimeConstrainedProcessTracker timeConstrainedProcessTracker() {
         this.assertStateTrue(this.canTimeout(), "Process does not timeout.");
 
-        TimeConstrainedProcessTracker tracker =
-                new TimeConstrainedProcessTracker(
-                        this.tenantId(),
-                        this.processId(),
-                        this.description(),
-                        this.startTime(),
-                        this.allowableDuration(),
-                        this.totalRetriesPermitted(),
-                        this.processTimedOutEventType().getName());
+        TimeConstrainedProcessTracker tracker = new TimeConstrainedProcessTracker(this.tenantId(), this.processId(), this.description(), this.startTime(), this.allowableDuration(),
+                                                                                  this.totalRetriesPermitted(), this.processTimedOutEventType().getName());
 
         return tracker;
     }
@@ -189,9 +166,7 @@ public abstract class AbstractProcess extends Entity implements Process {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             AbstractProcess typedObject = (AbstractProcess) anObject;
-            equalObjects =
-                this.tenantId().equals(typedObject.tenantId()) &&
-                this.processId().equals(typedObject.processId());
+            equalObjects = this.tenantId().equals(typedObject.tenantId()) && this.processId().equals(typedObject.processId());
         }
 
         return equalObjects;
@@ -199,21 +174,14 @@ public abstract class AbstractProcess extends Entity implements Process {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (71547 * 953)
-            + this.tenantId().hashCode()
-            + this.processId().hashCode();
+        int hashCodeValue = +(71547 * 953) + this.tenantId().hashCode() + this.processId().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "AbstractProcess [id=" + id() + "allowableDuration=" + allowableDuration
-                + ", description=" + description + ", processId=" + processId
-                + ", processCompletionType=" + processCompletionType + ", startTime=" + startTime
-                + ", tenantId=" + tenantId + ", timedOutDate=" + timedOutDate
-                + ", totalRetriesPermitted=" + totalRetriesPermitted + "]";
+        return "AbstractProcess [id=" + id() + "allowableDuration=" + allowableDuration + ", description=" + description + ", processId=" + processId + ", processCompletionType=" + processCompletionType + ", startTime=" + startTime + ", tenantId=" + tenantId + ", timedOutDate=" + timedOutDate + ", totalRetriesPermitted=" + totalRetriesPermitted + "]";
     }
 
     protected AbstractProcess() {
@@ -243,14 +211,11 @@ public abstract class AbstractProcess extends Entity implements Process {
     }
 
     private boolean hasProcessTimedOut(Date aTimedOutDate) {
-        return this.calculateTotalCurrentDuration(aTimedOutDate) >=
-               this.totalAllowableDuration();
+        return this.calculateTotalCurrentDuration(aTimedOutDate) >= this.totalAllowableDuration();
     }
 
     private void setAllowableDuration(long anAllowableDuration) {
-        this.assertArgumentTrue(
-                anAllowableDuration > 0,
-                "The allowable duration must be greater than zero.");
+        this.assertArgumentTrue(anAllowableDuration > 0, "The allowable duration must be greater than zero.");
 
         this.allowableDuration = anAllowableDuration;
     }

@@ -36,10 +36,7 @@ public class ProductApplicationService {
     private ProductOwnerRepository productOwnerRepository;
     private ProductRepository productRepository;
 
-    public ProductApplicationService(
-            ProductRepository aProductRepository,
-            ProductOwnerRepository aProductOwnerRepository,
-            TimeConstrainedProcessTrackerRepository aProcessTrackerRepository) {
+    public ProductApplicationService(ProductRepository aProductRepository, ProductOwnerRepository aProductOwnerRepository, TimeConstrainedProcessTrackerRepository aProcessTrackerRepository) {
 
         super();
 
@@ -54,18 +51,10 @@ public class ProductApplicationService {
         ApplicationServiceLifeCycle.begin();
 
         try {
-            Product product =
-                    this.productRepository()
-                        .productOfId(
-                                new TenantId(aCommand.getTenantId()),
-                                new ProductId(aCommand.getProductId()));
+            Product product = this.productRepository().productOfId(new TenantId(aCommand.getTenantId()), new ProductId(aCommand.getProductId()));
 
             if (product == null) {
-                throw new IllegalStateException(
-                        "Unknown product of tenant id: "
-                        + aCommand.getTenantId()
-                        + " and product id: "
-                        + aCommand.getProductId());
+                throw new IllegalStateException("Unknown product of tenant id: " + aCommand.getTenantId() + " and product id: " + aCommand.getProductId());
             }
 
             product.initiateDiscussion(new DiscussionDescriptor(aCommand.getDiscussionId()));
@@ -74,9 +63,7 @@ public class ProductApplicationService {
 
             ProcessId processId = ProcessId.existingProcessId(product.discussionInitiationId());
 
-            TimeConstrainedProcessTracker tracker =
-                    this.processTrackerRepository()
-                        .trackerOfProcessId(aCommand.getTenantId(), processId);
+            TimeConstrainedProcessTracker tracker = this.processTrackerRepository().trackerOfProcessId(aCommand.getTenantId(), processId);
 
             tracker.completed();
 
@@ -91,37 +78,19 @@ public class ProductApplicationService {
 
     public String newProduct(NewProductCommand aCommand) {
 
-        return this.newProductWith(
-                aCommand.getTenantId(),
-                aCommand.getProductOwnerId(),
-                aCommand.getName(),
-                aCommand.getDescription(),
-                DiscussionAvailability.NOT_REQUESTED);
+        return this.newProductWith(aCommand.getTenantId(), aCommand.getProductOwnerId(), aCommand.getName(), aCommand.getDescription(), DiscussionAvailability.NOT_REQUESTED);
     }
 
     public String newProductWithDiscussion(NewProductCommand aCommand) {
 
-        return this.newProductWith(
-                aCommand.getTenantId(),
-                aCommand.getProductOwnerId(),
-                aCommand.getName(),
-                aCommand.getDescription(),
-                this.requestDiscussionIfAvailable());
+        return this.newProductWith(aCommand.getTenantId(), aCommand.getProductOwnerId(), aCommand.getName(), aCommand.getDescription(), this.requestDiscussionIfAvailable());
     }
 
     public void requestProductDiscussion(RequestProductDiscussionCommand aCommand) {
-        Product product =
-                this.productRepository()
-                    .productOfId(
-                            new TenantId(aCommand.getTenantId()),
-                            new ProductId(aCommand.getProductId()));
+        Product product = this.productRepository().productOfId(new TenantId(aCommand.getTenantId()), new ProductId(aCommand.getProductId()));
 
         if (product == null) {
-            throw new IllegalStateException(
-                    "Unknown product of tenant id: "
-                    + aCommand.getTenantId()
-                    + " and product id: "
-                    + aCommand.getProductId());
+            throw new IllegalStateException("Unknown product of tenant id: " + aCommand.getTenantId() + " and product id: " + aCommand.getProductId());
         }
 
         this.requestProductDiscussionFor(product);
@@ -133,18 +102,10 @@ public class ProductApplicationService {
 
         TenantId tenantId = new TenantId(aCommand.getTenantId());
 
-        Product product =
-                this.productRepository()
-                    .productOfDiscussionInitiationId(
-                            tenantId,
-                            processId.id());
+        Product product = this.productRepository().productOfDiscussionInitiationId(tenantId, processId.id());
 
         if (product == null) {
-            throw new IllegalStateException(
-                    "Unknown product of tenant id: "
-                    + aCommand.getTenantId()
-                    + " and discussion initiation id: "
-                    + processId.id());
+            throw new IllegalStateException("Unknown product of tenant id: " + aCommand.getTenantId() + " and discussion initiation id: " + processId.id());
         }
 
         this.requestProductDiscussionFor(product);
@@ -155,18 +116,10 @@ public class ProductApplicationService {
         ApplicationServiceLifeCycle.begin();
 
         try {
-            Product product =
-                    this.productRepository()
-                        .productOfId(
-                                new TenantId(aCommand.getTenantId()),
-                                new ProductId(aCommand.getProductId()));
+            Product product = this.productRepository().productOfId(new TenantId(aCommand.getTenantId()), new ProductId(aCommand.getProductId()));
 
             if (product == null) {
-                throw new IllegalStateException(
-                        "Unknown product of tenant id: "
-                        + aCommand.getTenantId()
-                        + " and product id: "
-                        + aCommand.getProductId());
+                throw new IllegalStateException("Unknown product of tenant id: " + aCommand.getTenantId() + " and product id: " + aCommand.getProductId());
             }
 
             TimeConstrainedProcessTracker tracker = processTrackerOfProduct(product);
@@ -193,11 +146,7 @@ public class ProductApplicationService {
 
             TenantId tenantId = new TenantId(aCommand.getTenantId());
 
-            Product product =
-                    this.productRepository()
-                        .productOfDiscussionInitiationId(
-                                tenantId,
-                                processId.id());
+            Product product = this.productRepository().productOfDiscussionInitiationId(tenantId, processId.id());
 
             this.sendEmailForTimedOutProcess(product);
 
@@ -218,12 +167,7 @@ public class ProductApplicationService {
 
     }
 
-    private String newProductWith(
-            String aTenantId,
-            String aProductOwnerId,
-            String aName,
-            String aDescription,
-            DiscussionAvailability aDiscussionAvailability) {
+    private String newProductWith(String aTenantId, String aProductOwnerId, String aName, String aDescription, DiscussionAvailability aDiscussionAvailability) {
 
         TenantId tenantId = new TenantId(aTenantId);
         ProductId productId = null;
@@ -233,20 +177,9 @@ public class ProductApplicationService {
         try {
             productId = this.productRepository().nextIdentity();
 
-            ProductOwner productOwner =
-                    this.productOwnerRepository()
-                        .productOwnerOfIdentity(
-                                tenantId,
-                                aProductOwnerId);
+            ProductOwner productOwner = this.productOwnerRepository().productOwnerOfIdentity(tenantId, aProductOwnerId);
 
-            Product product =
-                    new Product(
-                            tenantId,
-                            productId,
-                            productOwner.productOwnerId(),
-                            aName,
-                            aDescription,
-                            aDiscussionAvailability);
+            Product product = new Product(tenantId, productId, productOwner.productOwnerId(), aName, aDescription, aDiscussionAvailability);
 
             this.productRepository().save(product);
 
@@ -302,25 +235,16 @@ public class ProductApplicationService {
     private TimeConstrainedProcessTracker processTrackerOfProduct(Product aProduct) {
         TimeConstrainedProcessTracker tracker = null;
 
-        if(aProduct.discussionInitiationId() != null) {
+        if (aProduct.discussionInitiationId() != null) {
             ProcessId processId = ProcessId.existingProcessId(aProduct.discussionInitiationId());
 
-            tracker = this.processTrackerRepository()
-                    .trackerOfProcessId(aProduct.tenantId().id(), processId);
+            tracker = this.processTrackerRepository().trackerOfProcessId(aProduct.tenantId().id(), processId);
         } else {
-            String timedOutEventName =
-                    ProductDiscussionRequestTimedOut.class.getName();
+            String timedOutEventName = ProductDiscussionRequestTimedOut.class.getName();
 
-            tracker =
-                    new TimeConstrainedProcessTracker(
-                            aProduct.tenantId().id(),
-                            ProcessId.newProcessId(),
-                            "Create discussion for product: "
-                                    + aProduct.name(),
-                            new Date(),
-                            5L * 60L * 1000L, // retries every 5 minutes
-                            3, // 3 total retries
-                            timedOutEventName);
+            tracker = new TimeConstrainedProcessTracker(aProduct.tenantId().id(), ProcessId.newProcessId(), "Create discussion for product: " + aProduct.name(), new Date(), 5L * 60L * 1000L, // retries every 5 minutes
+                    3, // 3 total retries
+                    timedOutEventName);
         }
 
         return tracker;

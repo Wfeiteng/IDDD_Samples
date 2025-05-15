@@ -20,24 +20,20 @@ public class ProductDiscussionExclusiveOwnerId {
 
     private String id;
 
-    public static ProductDiscussionExclusiveOwnerId fromEncodedId(
-            String anEncodedId) {
+    public static ProductDiscussionExclusiveOwnerId fromEncodedId(String anEncodedId) {
 
         ProductDiscussionExclusiveOwnerId id = null;
 
         if (ProductDiscussionExclusiveOwnerId.isValid(anEncodedId)) {
-            id = new ProductDiscussionExclusiveOwnerId(
-                    anEncodedId.substring(PREFIX.length()));
+            id = new ProductDiscussionExclusiveOwnerId(anEncodedId.substring(PREFIX.length()));
         }
 
         return id;
     }
 
-    public static boolean isValid(
-            String anEncodedId) {
+    public static boolean isValid(String anEncodedId) {
 
-        return anEncodedId.startsWith(PREFIX) &&
-                anEncodedId.length() > PREFIX.length();
+        return anEncodedId.startsWith(PREFIX) && anEncodedId.length() > PREFIX.length();
     }
 
     public ProductDiscussionExclusiveOwnerId(String anId) {

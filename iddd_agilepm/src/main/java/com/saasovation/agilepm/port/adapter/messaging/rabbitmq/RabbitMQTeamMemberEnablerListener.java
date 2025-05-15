@@ -27,11 +27,8 @@ public class RabbitMQTeamMemberEnablerListener extends ExchangeListener {
 
     private TeamApplicationService teamApplicationService;
 
-    public RabbitMQTeamMemberEnablerListener(
-            TeamApplicationService aTeamApplicationService) {
-
+    public RabbitMQTeamMemberEnablerListener(TeamApplicationService aTeamApplicationService) {
         super();
-
         this.teamApplicationService = aTeamApplicationService;
     }
 
@@ -46,8 +43,7 @@ public class RabbitMQTeamMemberEnablerListener extends ExchangeListener {
 
         String roleName = reader.eventStringValue("roleName");
 
-        if (!roleName.equals("ScrumProductOwner") &&
-            !roleName.equals("ScrumTeamMember")) {
+        if (!roleName.equals("ScrumProductOwner") && !roleName.equals("ScrumTeamMember")) {
             return;
         }
 
@@ -59,31 +55,15 @@ public class RabbitMQTeamMemberEnablerListener extends ExchangeListener {
         Date occurredOn = reader.occurredOn();
 
         if (roleName.equals("ScrumProductOwner")) {
-            this.teamApplicationService().enableProductOwner(
-                    new EnableProductOwnerCommand(
-                        tenantId,
-                        username,
-                        firstName,
-                        lastName,
-                        emailAddress,
-                        occurredOn));
+            this.teamApplicationService().enableProductOwner(new EnableProductOwnerCommand(tenantId, username, firstName, lastName, emailAddress, occurredOn));
         } else {
-            this.teamApplicationService().enableTeamMember(
-                    new EnableTeamMemberCommand(
-                        tenantId,
-                        username,
-                        firstName,
-                        lastName,
-                        emailAddress,
-                        occurredOn));
+            this.teamApplicationService().enableTeamMember(new EnableTeamMemberCommand(tenantId, username, firstName, lastName, emailAddress, occurredOn));
         }
     }
 
     @Override
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.identityaccess.domain.model.access.UserAssignedToRole"
-                };
+        return new String[]{"com.saasovation.identityaccess.domain.model.access.UserAssignedToRole"};
     }
 
     private TeamApplicationService teamApplicationService() {

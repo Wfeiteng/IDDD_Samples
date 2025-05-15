@@ -24,9 +24,7 @@ import com.saasovation.collaboration.port.adapter.persistence.EventStoreProvider
 import com.saasovation.common.event.sourcing.EventStream;
 import com.saasovation.common.event.sourcing.EventStreamId;
 
-public class EventStoreCalendarEntryRepository
-        extends EventStoreProvider
-        implements CalendarEntryRepository {
+public class EventStoreCalendarEntryRepository extends EventStoreProvider implements CalendarEntryRepository {
 
     public EventStoreCalendarEntryRepository() {
         super();
@@ -52,11 +50,7 @@ public class EventStoreCalendarEntryRepository
 
     @Override
     public void save(CalendarEntry aCalendarEntry) {
-        EventStreamId eventId =
-                new EventStreamId(
-                        aCalendarEntry.tenant().id(),
-                        aCalendarEntry.calendarEntryId().id(),
-                        aCalendarEntry.mutatedVersion());
+        EventStreamId eventId = new EventStreamId(aCalendarEntry.tenant().id(), aCalendarEntry.calendarEntryId().id(), aCalendarEntry.mutatedVersion());
 
         this.eventStore().appendWith(eventId, aCalendarEntry.mutatingEvents());
     }

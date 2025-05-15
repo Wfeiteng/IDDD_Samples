@@ -25,9 +25,7 @@ import com.saasovation.common.port.adapter.persistence.leveldb.AbstractLevelDBRe
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBKey;
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBUnitOfWork;
 
-public class LevelDBProductOwnerRepository
-        extends AbstractLevelDBRepository
-        implements ProductOwnerRepository {
+public class LevelDBProductOwnerRepository extends AbstractLevelDBRepository implements ProductOwnerRepository {
 
     private static final String PRIMARY = "PRODUCTOWNER#PK";
     private static final String PRODUCT_OWNER_OF_TENANT = "PRODUCTOWNER#T";
@@ -61,9 +59,7 @@ public class LevelDBProductOwnerRepository
     public ProductOwner productOwnerOfIdentity(TenantId aTenantId, String aUsername) {
         LevelDBKey primaryKey = new LevelDBKey(PRIMARY, aTenantId.id(), aUsername);
 
-        ProductOwner productOwner =
-                LevelDBUnitOfWork.readOnly(this.database())
-                    .readObject(primaryKey.key().getBytes(), ProductOwner.class);
+        ProductOwner productOwner = LevelDBUnitOfWork.readOnly(this.database()).readObject(primaryKey.key().getBytes(), ProductOwner.class);
 
         return productOwner;
     }

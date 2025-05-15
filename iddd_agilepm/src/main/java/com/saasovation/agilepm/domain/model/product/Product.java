@@ -47,13 +47,7 @@ public class Product extends Entity {
     private ProductOwnerId productOwnerId;
     private TenantId tenantId;
 
-    public Product(
-            TenantId aTenantId,
-            ProductId aProductId,
-            ProductOwnerId aProductOwnerId,
-            String aName,
-            String aDescription,
-            DiscussionAvailability aDiscussionAvailability) {
+    public Product(TenantId aTenantId, ProductId aProductId, ProductOwnerId aProductOwnerId, String aName, String aDescription, DiscussionAvailability aDiscussionAvailability) {
 
         this();
 
@@ -65,15 +59,10 @@ public class Product extends Entity {
         this.setProductId(aProductId);
         this.setProductOwnerId(aProductOwnerId);
 
-        DomainEventPublisher
-            .instance()
-            .publish(new ProductCreated(
-                    this.tenantId(),
-                    this.productId(),
-                    this.productOwnerId(),
-                    this.name(),
-                    this.description(),
-                    this.discussion().availability().isRequested()));
+        DomainEventPublisher.instance()
+                            .publish(new ProductCreated(this.tenantId(), this.productId(), this.productOwnerId(), this.name(), this.description(), this.discussion()
+                                                                                                                                                       .availability()
+                                                                                                                                                       .isRequested()));
     }
 
     public Set<ProductBacklogItem> allBacklogItems() {
@@ -103,10 +92,7 @@ public class Product extends Entity {
     public void failDiscussionInitiation() {
         if (!this.discussion().availability().isReady()) {
             this.setDiscussionInitiationId(null);
-            this.setDiscussion(
-                    ProductDiscussion
-                        .fromAvailability(
-                                DiscussionAvailability.FAILED));
+            this.setDiscussion(ProductDiscussion.fromAvailability(DiscussionAvailability.FAILED));
         }
     }
 
@@ -118,12 +104,7 @@ public class Product extends Entity {
         if (this.discussion().availability().isRequested()) {
             this.setDiscussion(this.discussion().nowReady(aDescriptor));
 
-            DomainEventPublisher
-                .instance()
-                .publish(new ProductDiscussionInitiated(
-                        this.tenantId(),
-                        this.productId(),
-                        this.discussion()));
+            DomainEventPublisher.instance().publish(new ProductDiscussionInitiated(this.tenantId(), this.productId(), this.discussion()));
         }
     }
 
@@ -131,34 +112,12 @@ public class Product extends Entity {
         return this.name;
     }
 
-    public BacklogItem planBacklogItem(
-            BacklogItemId aNewBacklogItemId,
-            String aSummary,
-            String aCategory,
-            BacklogItemType aType,
-            StoryPoints aStoryPoints) {
+    public BacklogItem planBacklogItem(BacklogItemId aNewBacklogItemId, String aSummary, String aCategory, BacklogItemType aType, StoryPoints aStoryPoints) {
 
-        BacklogItem backlogItem =
-            new BacklogItem(
-                    this.tenantId(),
-                    this.productId(),
-                    aNewBacklogItemId,
-                    aSummary,
-                    aCategory,
-                    aType,
-                    BacklogItemStatus.PLANNED,
-                    aStoryPoints);
+        BacklogItem backlogItem = new BacklogItem(this.tenantId(), this.productId(), aNewBacklogItemId, aSummary, aCategory, aType, BacklogItemStatus.PLANNED, aStoryPoints);
 
-        DomainEventPublisher
-            .instance()
-            .publish(new ProductBacklogItemPlanned(
-                    backlogItem.tenantId(),
-                    backlogItem.productId(),
-                    backlogItem.backlogItemId(),
-                    backlogItem.summary(),
-                    backlogItem.category(),
-                    backlogItem.type(),
-                    backlogItem.storyPoints()));
+        DomainEventPublisher.instance()
+                            .publish(new ProductBacklogItemPlanned(backlogItem.tenantId(), backlogItem.productId(), backlogItem.backlogItemId(), backlogItem.summary(), backlogItem.category(), backlogItem.type(), backlogItem.storyPoints()));
 
         return backlogItem;
     }
@@ -169,12 +128,7 @@ public class Product extends Entity {
 
         int ordering = this.backlogItems().size() + 1;
 
-        ProductBacklogItem productBacklogItem =
-                new ProductBacklogItem(
-                        this.tenantId(),
-                        this.productId(),
-                        aBacklogItem.backlogItemId(),
-                        ordering);
+        ProductBacklogItem productBacklogItem = new ProductBacklogItem(this.tenantId(), this.productId(), aBacklogItem.backlogItemId(), ordering);
 
         this.backlogItems().add(productBacklogItem);
     }
@@ -195,80 +149,31 @@ public class Product extends Entity {
 
     public void requestDiscussion(DiscussionAvailability aDiscussionAvailability) {
         if (!this.discussion().availability().isReady()) {
-            this.setDiscussion(
-                    ProductDiscussion.fromAvailability(
-                            aDiscussionAvailability));
+            this.setDiscussion(ProductDiscussion.fromAvailability(aDiscussionAvailability));
 
-            DomainEventPublisher
-                .instance()
-                .publish(new ProductDiscussionRequested(
-                        this.tenantId(),
-                        this.productId(),
-                        this.productOwnerId(),
-                        this.name(),
-                        this.description(),
-                        this.discussion().availability().isRequested()));
+            DomainEventPublisher.instance()
+                                .publish(new ProductDiscussionRequested(this.tenantId(), this.productId(), this.productOwnerId(), this.name(), this.description(), this.discussion()
+                                                                                                                                                                       .availability()
+                                                                                                                                                                       .isRequested()));
         }
     }
 
-    public Release scheduleRelease(
-            ReleaseId aNewReleaseId,
-            String aName,
-            String aDescription,
-            Date aBegins,
-            Date anEnds) {
+    public Release scheduleRelease(ReleaseId aNewReleaseId, String aName, String aDescription, Date aBegins, Date anEnds) {
 
-        Release release =
-            new Release(
-                    this.tenantId(),
-                    this.productId(),
-                    aNewReleaseId,
-                    aName,
-                    aDescription,
-                    aBegins,
-                    anEnds);
+        Release release = new Release(this.tenantId(), this.productId(), aNewReleaseId, aName, aDescription, aBegins, anEnds);
 
-        DomainEventPublisher
-            .instance()
-            .publish(new ProductReleaseScheduled(
-                    release.tenantId(),
-                    release.productId(),
-                    release.releaseId(),
-                    release.name(),
-                    release.description(),
-                    release.begins(),
-                    release.ends()));
+        DomainEventPublisher.instance()
+                            .publish(new ProductReleaseScheduled(release.tenantId(), release.productId(), release.releaseId(), release.name(), release.description(), release.begins(), release.ends()));
 
         return release;
     }
 
-    public Sprint scheduleSprint(
-            SprintId aNewSprintId,
-            String aName,
-            String aGoals,
-            Date aBegins,
-            Date anEnds) {
+    public Sprint scheduleSprint(SprintId aNewSprintId, String aName, String aGoals, Date aBegins, Date anEnds) {
 
-        Sprint sprint =
-            new Sprint(
-                    this.tenantId(),
-                    this.productId(),
-                    aNewSprintId,
-                    aName,
-                    aGoals,
-                    aBegins,
-                    anEnds);
+        Sprint sprint = new Sprint(this.tenantId(), this.productId(), aNewSprintId, aName, aGoals, aBegins, anEnds);
 
-        DomainEventPublisher
-            .instance()
-            .publish(new ProductSprintScheduled(
-                    sprint.tenantId(),
-                    sprint.productId(),
-                    sprint.sprintId(),
-                    sprint.name(),
-                    sprint.goals(),
-                    sprint.begins(),
-                    sprint.ends()));
+        DomainEventPublisher.instance()
+                            .publish(new ProductSprintScheduled(sprint.tenantId(), sprint.productId(), sprint.sprintId(), sprint.name(), sprint.goals(), sprint.begins(), sprint.ends()));
 
         return sprint;
     }
@@ -289,9 +194,7 @@ public class Product extends Entity {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             Product typedObject = (Product) anObject;
-            equalObjects =
-                this.tenantId().equals(typedObject.tenantId()) &&
-                this.productId().equals(typedObject.productId());
+            equalObjects = this.tenantId().equals(typedObject.tenantId()) && this.productId().equals(typedObject.productId());
         }
 
         return equalObjects;
@@ -299,21 +202,14 @@ public class Product extends Entity {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (2335 * 3)
-            + this.tenantId().hashCode()
-            + this.productId().hashCode();
+        int hashCodeValue = +(2335 * 3) + this.tenantId().hashCode() + this.productId().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "Product [tenantId=" + tenantId + ", productId=" + productId
-                + ", backlogItems=" + backlogItems + ", description="
-                + description + ", discussion=" + discussion
-                + ", discussionInitiationId=" + discussionInitiationId
-                + ", name=" + name + ", productOwnerId=" + productOwnerId + "]";
+        return "Product [tenantId=" + tenantId + ", productId=" + productId + ", backlogItems=" + backlogItems + ", description=" + description + ", discussion=" + discussion + ", discussionInitiationId=" + discussionInitiationId + ", name=" + name + ", productOwnerId=" + productOwnerId + "]";
     }
 
     private Product() {
@@ -345,10 +241,7 @@ public class Product extends Entity {
 
     private void setDiscussionInitiationId(String aDiscussionInitiationId) {
         if (aDiscussionInitiationId != null) {
-            this.assertArgumentLength(
-                    aDiscussionInitiationId,
-                    100,
-                    "Discussion initiation identity must be 100 characters or less.");
+            this.assertArgumentLength(aDiscussionInitiationId, 100, "Discussion initiation identity must be 100 characters or less.");
         }
 
         this.discussionInitiationId = aDiscussionInitiationId;

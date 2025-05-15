@@ -37,17 +37,8 @@ public class CalendarEntryScheduled implements DomainEvent {
     private Tenant tenant;
     private TimeSpan timeSpan;
 
-    public CalendarEntryScheduled(
-            Tenant aTenant,
-            CalendarId aCalendarId,
-            CalendarEntryId aCalendarEntryId,
-            String aDescription,
-            String aLocation,
-            Owner anOwner,
-            TimeSpan aTimeSpan,
-            Repetition aRepetition,
-            Alarm anAlarm,
-            Set<Participant> anInvitees) {
+    public CalendarEntryScheduled(Tenant aTenant, CalendarId aCalendarId, CalendarEntryId aCalendarEntryId, String aDescription, String aLocation, Owner anOwner,
+                                  TimeSpan aTimeSpan, Repetition aRepetition, Alarm anAlarm, Set<Participant> anInvitees) {
 
         super();
 

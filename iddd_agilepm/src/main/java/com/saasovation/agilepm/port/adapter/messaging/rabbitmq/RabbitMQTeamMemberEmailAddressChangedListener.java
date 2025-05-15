@@ -26,8 +26,7 @@ public class RabbitMQTeamMemberEmailAddressChangedListener extends ExchangeListe
 
     private TeamApplicationService teamApplicationService;
 
-    public RabbitMQTeamMemberEmailAddressChangedListener(
-            TeamApplicationService aTeamApplicationService) {
+    public RabbitMQTeamMemberEmailAddressChangedListener(TeamApplicationService aTeamApplicationService) {
 
         super();
 
@@ -41,25 +40,16 @@ public class RabbitMQTeamMemberEmailAddressChangedListener extends ExchangeListe
     protected void filteredDispatch(String aType, String aTextMessage) {
         NotificationReader reader = new NotificationReader(aTextMessage);
 
-        String emailAddress =
-                reader.eventStringValue(
-                        "contactInformation.emailAddress.address");
+        String emailAddress = reader.eventStringValue("contactInformation.emailAddress.address");
         String tenantId = reader.eventStringValue("tenantId.id");
         String username = reader.eventStringValue("username");
         Date occurredOn = reader.occurredOn();
 
-        this.teamApplicationService().changeTeamMemberEmailAddress(
-                new ChangeTeamMemberEmailAddressCommand(
-                    tenantId,
-                    username,
-                    emailAddress,
-                    occurredOn));
+        this.teamApplicationService().changeTeamMemberEmailAddress(new ChangeTeamMemberEmailAddressCommand(tenantId, username, emailAddress, occurredOn));
     }
 
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.identityaccess.domain.model.identity.PersonContactInformationChanged"
-                };
+        return new String[]{"com.saasovation.identityaccess.domain.model.identity.PersonContactInformationChanged"};
     }
 
     private TeamApplicationService teamApplicationService() {

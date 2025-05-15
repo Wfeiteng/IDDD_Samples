@@ -18,9 +18,7 @@ import java.io.Serializable;
 
 import com.saasovation.common.AssertionConcern;
 
-public abstract class AbstractId
-    extends AssertionConcern
-    implements Identity, Serializable {
+public abstract class AbstractId extends AssertionConcern implements Identity, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,9 +42,7 @@ public abstract class AbstractId
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-                + (this.hashOddValue() * this.hashPrimeValue())
-                + this.id().hashCode();
+        int hashCodeValue = +(this.hashOddValue() * this.hashPrimeValue()) + this.id().hashCode();
 
         return hashCodeValue;
     }

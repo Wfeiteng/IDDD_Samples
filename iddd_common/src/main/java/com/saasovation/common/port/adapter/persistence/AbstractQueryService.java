@@ -55,11 +55,7 @@ public abstract class AbstractQueryService {
         ConnectionProvider.closeConnection();
     }
 
-    protected <T> T queryObject(
-            Class<T> aClass,
-            String aQuery,
-            JoinOn aJoinOn,
-            String... anArguments) {
+    protected <T> T queryObject(Class<T> aClass, String aQuery, JoinOn aJoinOn, String... anArguments) {
 
         T object = null;
 
@@ -87,11 +83,7 @@ public abstract class AbstractQueryService {
         return object;
     }
 
-    protected <T> Collection<T> queryObjects(
-            Class<T> aClass,
-            String aQuery,
-            JoinOn aJoinOn,
-            Object... anArguments) {
+    protected <T> Collection<T> queryObjects(Class<T> aClass, String aQuery, JoinOn aJoinOn, Object... anArguments) {
 
         List<T> objects = new ArrayList<T>();
 
@@ -121,9 +113,7 @@ public abstract class AbstractQueryService {
         return objects;
     }
 
-    protected String queryString(
-            String aQuery,
-            String... anArguments) {
+    protected String queryString(String aQuery, String... anArguments) {
 
         String value = null;
 
@@ -152,36 +142,32 @@ public abstract class AbstractQueryService {
     }
 
     private <T> T mapResultToType(ResultSet aResultSet, Class<T> aClass, JoinOn aJoinOn) {
-        ResultSetObjectMapper<T> mapper =
-                new ResultSetObjectMapper<T>(aResultSet, aClass, aJoinOn);
+        ResultSetObjectMapper<T> mapper = new ResultSetObjectMapper<T>(aResultSet, aClass, aJoinOn);
 
         return mapper.mapResultToType();
     }
 
-    private void setStatementArguments(
-            PreparedStatement aPreparedStatement,
-            Object[] anArguments)
-    throws SQLException {
+    private void setStatementArguments(PreparedStatement aPreparedStatement, Object[] anArguments) throws SQLException {
 
         for (int idx = 0; idx < anArguments.length; ++idx) {
             Object argument = anArguments[idx];
             Class<?> argumentType = argument.getClass();
 
             if (argumentType == String.class) {
-                aPreparedStatement.setString(idx+1, (String) argument);
+                aPreparedStatement.setString(idx + 1, (String) argument);
             } else if (argumentType == Integer.class) {
-                aPreparedStatement.setInt(idx+1, (Integer) argument);
+                aPreparedStatement.setInt(idx + 1, (Integer) argument);
             } else if (argumentType == Long.class) {
-                aPreparedStatement.setLong(idx+1, (Long) argument);
+                aPreparedStatement.setLong(idx + 1, (Long) argument);
             } else if (argumentType == Boolean.class) {
-                aPreparedStatement.setBoolean(idx+1, (Boolean) argument);
+                aPreparedStatement.setBoolean(idx + 1, (Boolean) argument);
             } else if (argumentType == Date.class) {
                 java.sql.Date sqlDate = new java.sql.Date(((Date) argument).getTime());
-                aPreparedStatement.setDate(idx+1, sqlDate);
+                aPreparedStatement.setDate(idx + 1, sqlDate);
             } else if (argumentType == Double.class) {
-                aPreparedStatement.setDouble(idx+1, (Double) argument);
+                aPreparedStatement.setDouble(idx + 1, (Double) argument);
             } else if (argumentType == Float.class) {
-                aPreparedStatement.setFloat(idx+1, (Float) argument);
+                aPreparedStatement.setFloat(idx + 1, (Float) argument);
             }
         }
     }

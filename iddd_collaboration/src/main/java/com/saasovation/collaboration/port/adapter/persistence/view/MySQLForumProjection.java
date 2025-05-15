@@ -43,7 +43,6 @@ public class MySQLForumProjection
 
     public MySQLForumProjection(EventDispatcher aParentEventDispatcher) {
         super();
-
         aParentEventDispatcher.registerEventDispatcher(this);
     }
 

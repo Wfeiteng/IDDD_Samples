@@ -39,12 +39,10 @@ public class NotificationLogFactory {
     }
 
     public NotificationLog createCurrentNotificationLog() {
-        return this.createNotificationLog(
-                this.calculateCurrentNotificationLogId(eventStore));
+        return this.createNotificationLog(this.calculateCurrentNotificationLogId(eventStore));
     }
 
-    public NotificationLog createNotificationLog(
-            NotificationLogId aNotificationLogId) {
+    public NotificationLog createNotificationLog(NotificationLogId aNotificationLogId) {
 
         long count = this.eventStore().countStoredEvents();
 
@@ -53,8 +51,7 @@ public class NotificationLogFactory {
         return this.createNotificationLog(info);
     }
 
-    private NotificationLogInfo calculateCurrentNotificationLogId(
-            EventStore anEventStore) {
+    private NotificationLogInfo calculateCurrentNotificationLogId(EventStore anEventStore) {
 
         long count = anEventStore.countStoredEvents();
 
@@ -73,44 +70,29 @@ public class NotificationLogFactory {
         return new NotificationLogInfo(new NotificationLogId(low, high), count);
     }
 
-    private NotificationLog createNotificationLog(
-            NotificationLogInfo aNotificationLogInfo) {
+    private NotificationLog createNotificationLog(NotificationLogInfo aNotificationLogInfo) {
 
-        List<StoredEvent> storedEvents =
-            this.eventStore().allStoredEventsBetween(
-                    aNotificationLogInfo.notificationLogId().low(),
-                    aNotificationLogInfo.notificationLogId().high());
+        List<StoredEvent> storedEvents = this.eventStore().allStoredEventsBetween(aNotificationLogInfo.notificationLogId().low(), aNotificationLogInfo.notificationLogId().high());
 
-        boolean archivedIndicator =
-                aNotificationLogInfo.notificationLogId().high() < aNotificationLogInfo.totalLogged();
+        boolean archivedIndicator = aNotificationLogInfo.notificationLogId().high() < aNotificationLogInfo.totalLogged();
 
-        NotificationLogId next = archivedIndicator ?
-                aNotificationLogInfo.notificationLogId().next(NOTIFICATIONS_PER_LOG) :
-                null;
+        NotificationLogId next = archivedIndicator ? aNotificationLogInfo.notificationLogId().next(NOTIFICATIONS_PER_LOG) : null;
 
-        NotificationLogId previous =
-                aNotificationLogInfo.notificationLogId().previous(NOTIFICATIONS_PER_LOG);
+        NotificationLogId previous = aNotificationLogInfo.notificationLogId().previous(NOTIFICATIONS_PER_LOG);
 
-        NotificationLog notificationLog =
-            new NotificationLog(
-                    aNotificationLogInfo.notificationLogId().encoded(),
-                    NotificationLogId.encoded(next),
-                    NotificationLogId.encoded(previous),
-                    this.notificationsFrom(storedEvents),
-                    archivedIndicator);
+        NotificationLog notificationLog = new NotificationLog(aNotificationLogInfo.notificationLogId().encoded(), NotificationLogId.encoded(next),
+                                                              NotificationLogId.encoded(previous), this.notificationsFrom(storedEvents), archivedIndicator);
 
         return notificationLog;
     }
 
     private List<Notification> notificationsFrom(List<StoredEvent> aStoredEvents) {
-        List<Notification> notifications =
-            new ArrayList<Notification>(aStoredEvents.size());
+        List<Notification> notifications = new ArrayList<Notification>(aStoredEvents.size());
 
         for (StoredEvent storedEvent : aStoredEvents) {
             DomainEvent domainEvent = storedEvent.toDomainEvent();
 
-            Notification notification =
-                new Notification(storedEvent.eventId(), domainEvent);
+            Notification notification = new Notification(storedEvent.eventId(), domainEvent);
 
             notifications.add(notification);
         }

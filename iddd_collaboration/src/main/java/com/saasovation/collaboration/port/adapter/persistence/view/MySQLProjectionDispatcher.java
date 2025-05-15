@@ -26,9 +26,7 @@ public class MySQLProjectionDispatcher implements EventDispatcher {
 
     public MySQLProjectionDispatcher(EventDispatcher aParentEventDispatcher) {
         super();
-
         aParentEventDispatcher.registerEventDispatcher(this);
-
         this.setRegisteredProjections(new ArrayList<EventDispatcher>());
     }
 

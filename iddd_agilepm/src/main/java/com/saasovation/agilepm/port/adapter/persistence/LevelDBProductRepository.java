@@ -27,9 +27,7 @@ import com.saasovation.common.port.adapter.persistence.leveldb.AbstractLevelDBRe
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBKey;
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBUnitOfWork;
 
-public class LevelDBProductRepository
-        extends AbstractLevelDBRepository
-        implements ProductRepository {
+public class LevelDBProductRepository extends AbstractLevelDBRepository implements ProductRepository {
 
     private static final String PRIMARY = "PRODUCT#PK";
     private static final String PRODUCTS_OF_TENANT = "PRODUCT#T";
@@ -66,17 +64,11 @@ public class LevelDBProductRepository
     }
 
     @Override
-    public Product productOfDiscussionInitiationId(
-            TenantId aTenantId,
-            String aDiscussionInitiationId) {
+    public Product productOfDiscussionInitiationId(TenantId aTenantId, String aDiscussionInitiationId) {
 
         Product product = null;
 
-        LevelDBKey productsOfDiscussion =
-                new LevelDBKey(
-                        PRODUCT_OF_DISCUSSION,
-                        aTenantId.id(),
-                        aDiscussionInitiationId);
+        LevelDBKey productsOfDiscussion = new LevelDBKey(PRODUCT_OF_DISCUSSION, aTenantId.id(), aDiscussionInitiationId);
 
         LevelDBUnitOfWork uow = LevelDBUnitOfWork.readOnly(this.database());
 
@@ -93,9 +85,7 @@ public class LevelDBProductRepository
     public Product productOfId(TenantId aTenantId, ProductId aProductId) {
         LevelDBKey primaryKey = new LevelDBKey(PRIMARY, aTenantId.id(), aProductId.id());
 
-        Product product =
-                LevelDBUnitOfWork.readOnly(this.database())
-                    .readObject(primaryKey.key().getBytes(), Product.class);
+        Product product = LevelDBUnitOfWork.readOnly(this.database()).readObject(primaryKey.key().getBytes(), Product.class);
 
         return product;
     }

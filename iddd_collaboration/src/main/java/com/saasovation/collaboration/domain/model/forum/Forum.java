@@ -34,14 +34,7 @@ public class Forum extends EventSourcedRootEntity {
     private String subject;
     private Tenant tenant;
 
-    public Forum(
-            Tenant aTenant,
-            ForumId aForumId,
-            Creator aCreator,
-            Moderator aModerator,
-            String aSubject,
-            String aDescription,
-            String anExclusiveOwner) {
+    public Forum(Tenant aTenant, ForumId aForumId, Creator aCreator, Moderator aModerator, String aSubject, String aDescription, String anExclusiveOwner) {
 
         this();
 
@@ -52,8 +45,7 @@ public class Forum extends EventSourcedRootEntity {
         this.assertArgumentNotEmpty(aSubject, "The subject must be provided.");
         this.assertArgumentNotNull(aTenant, "The creator must be provided.");
 
-        this.apply(new ForumStarted(aTenant, aForumId, aCreator,
-                aModerator, aSubject, aDescription, anExclusiveOwner));
+        this.apply(new ForumStarted(aTenant, aForumId, aCreator, aModerator, aSubject, aDescription, anExclusiveOwner));
     }
 
     public Forum(List<DomainEvent> anEventStream, int aStreamVersion) {
@@ -64,24 +56,21 @@ public class Forum extends EventSourcedRootEntity {
         this.assertStateFalse(this.isClosed(), "Forum is closed.");
         this.assertArgumentNotNull(aModerator, "The moderator must be provided.");
 
-        this.apply(new ForumModeratorChanged(this.tenant(), this.forumId(),
-                aModerator, this.exclusiveOwner()));
+        this.apply(new ForumModeratorChanged(this.tenant(), this.forumId(), aModerator, this.exclusiveOwner()));
     }
 
     public void changeDescription(String aDescription) {
         this.assertStateFalse(this.isClosed(), "Forum is closed.");
         this.assertArgumentNotEmpty(aDescription, "The description must be provided.");
 
-        this.apply(new ForumDescriptionChanged(this.tenant(), this.forumId(),
-                aDescription, this.exclusiveOwner()));
+        this.apply(new ForumDescriptionChanged(this.tenant(), this.forumId(), aDescription, this.exclusiveOwner()));
     }
 
     public void changeSubject(String aSubject) {
         this.assertStateFalse(this.isClosed(), "Forum is closed.");
         this.assertArgumentNotEmpty(aSubject, "The subject must be provided.");
 
-        this.apply(new ForumSubjectChanged(this.tenant(), this.forumId(),
-                aSubject, this.exclusiveOwner()));
+        this.apply(new ForumSubjectChanged(this.tenant(), this.forumId(), aSubject, this.exclusiveOwner()));
     }
 
     public void close() {
@@ -118,11 +107,7 @@ public class Forum extends EventSourcedRootEntity {
         return this.moderator().equals(aModerator);
     }
 
-    public void moderatePost(
-            Post aPost,
-            Moderator aModerator,
-            String aSubject,
-            String aBodyText) {
+    public void moderatePost(Post aPost, Moderator aModerator, String aSubject, String aBodyText) {
 
         this.assertStateFalse(this.isClosed(), "Forum is closed.");
         this.assertArgumentNotNull(aPost, "Post may not be null.");
@@ -142,32 +127,18 @@ public class Forum extends EventSourcedRootEntity {
         this.apply(new ForumReopened(this.tenant(), this.forumId(), this.exclusiveOwner()));
     }
 
-    public Discussion startDiscussion(
-            ForumIdentityService aForumIdentityService,
-            Author anAuthor,
-            String aSubject) {
+    public Discussion startDiscussion(ForumIdentityService aForumIdentityService, Author anAuthor, String aSubject) {
 
         return this.startDiscussionFor(aForumIdentityService, anAuthor, aSubject, null);
     }
 
-    public Discussion startDiscussionFor(
-            ForumIdentityService aForumIdentityService,
-            Author anAuthor,
-            String aSubject,
-            String anExclusiveOwner) {
+    public Discussion startDiscussionFor(ForumIdentityService aForumIdentityService, Author anAuthor, String aSubject, String anExclusiveOwner) {
 
         if (this.isClosed()) {
             throw new IllegalStateException("Forum is closed.");
         }
 
-        Discussion discussion =
-                new Discussion(
-                    this.tenant(),
-                    this.forumId(),
-                    aForumIdentityService.nextDiscussionId(),
-                    anAuthor,
-                    aSubject,
-                    anExclusiveOwner);
+        Discussion discussion = new Discussion(this.tenant(), this.forumId(), aForumIdentityService.nextDiscussionId(), anAuthor, aSubject, anExclusiveOwner);
 
         return discussion;
     }
@@ -186,9 +157,7 @@ public class Forum extends EventSourcedRootEntity {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             Forum typedObject = (Forum) anObject;
-            equalObjects =
-                this.tenant().equals(typedObject.tenant()) &&
-                this.forumId().equals(typedObject.forumId());
+            equalObjects = this.tenant().equals(typedObject.tenant()) && this.forumId().equals(typedObject.forumId());
         }
 
         return equalObjects;
@@ -196,20 +165,14 @@ public class Forum extends EventSourcedRootEntity {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (75219 * 41)
-            + this.tenant().hashCode()
-            + this.forumId().hashCode();
+        int hashCodeValue = +(75219 * 41) + this.tenant().hashCode() + this.forumId().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "Forum [closed=" + closed + ", creator=" + creator
-                + ", description=" + description + ", exclusiveOwner="+ exclusiveOwner
-                + ", forumId=" + forumId + ", moderator=" + moderator
-                + ", subject=" + subject + ", tenantId=" + tenant + "]";
+        return "Forum [closed=" + closed + ", creator=" + creator + ", description=" + description + ", exclusiveOwner=" + exclusiveOwner + ", forumId=" + forumId + ", moderator=" + moderator + ", subject=" + subject + ", tenantId=" + tenant + "]";
     }
 
     protected Forum() {

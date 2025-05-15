@@ -27,8 +27,7 @@ public class RabbitMQProductDiscussionRetryListener extends ExchangeListener {
 
     private ProductApplicationService productApplicationService;
 
-    public RabbitMQProductDiscussionRetryListener(
-            ProductApplicationService aProductApplicationService) {
+    public RabbitMQProductDiscussionRetryListener(ProductApplicationService aProductApplicationService) {
 
         super();
 
@@ -42,32 +41,21 @@ public class RabbitMQProductDiscussionRetryListener extends ExchangeListener {
 
     @Override
     protected void filteredDispatch(String aType, String aTextMessage) {
-        Notification notification =
-            NotificationSerializer
-                .instance()
-                .deserialize(aTextMessage, Notification.class);
+        Notification notification = NotificationSerializer.instance().deserialize(aTextMessage, Notification.class);
 
         ProductDiscussionRequestTimedOut event = notification.event();
 
         if (event.hasFullyTimedOut()) {
-            this.productApplicationService().timeOutProductDiscussionRequest(
-                    new TimeOutProductDiscussionRequestCommand(
-                            event.tenantId(),
-                            event.processId().id(),
-                            event.occurredOn()));
+            this.productApplicationService()
+                .timeOutProductDiscussionRequest(new TimeOutProductDiscussionRequestCommand(event.tenantId(), event.processId().id(), event.occurredOn()));
         } else {
-            this.productApplicationService().retryProductDiscussionRequest(
-                    new RetryProductDiscussionRequestCommand(
-                            event.tenantId(),
-                            event.processId().id()));
+            this.productApplicationService().retryProductDiscussionRequest(new RetryProductDiscussionRequestCommand(event.tenantId(), event.processId().id()));
         }
     }
 
     @Override
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.agilepm.domain.model.process.ProductDiscussionRequestTimedOut"
-                };
+        return new String[]{"com.saasovation.agilepm.domain.model.process.ProductDiscussionRequestTimedOut"};
     }
 
     private ProductApplicationService productApplicationService() {

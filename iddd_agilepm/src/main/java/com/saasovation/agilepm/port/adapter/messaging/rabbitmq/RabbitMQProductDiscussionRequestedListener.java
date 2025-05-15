@@ -29,16 +29,13 @@ import com.saasovation.common.port.adapter.messaging.rabbitmq.MessageParameters;
 import com.saasovation.common.port.adapter.messaging.rabbitmq.MessageProducer;
 import com.saasovation.common.serializer.PropertiesSerializer;
 
-public class RabbitMQProductDiscussionRequestedListener
-        extends ExchangeListener {
+public class RabbitMQProductDiscussionRequestedListener extends ExchangeListener {
 
-    private static final String COMMAND =
-            "com.saasovation.collaboration.discussion.CreateExclusiveDiscussion";
+    private static final String COMMAND = "com.saasovation.collaboration.discussion.CreateExclusiveDiscussion";
 
     private ProductApplicationService productApplicationService;
 
-    protected RabbitMQProductDiscussionRequestedListener(
-            ProductApplicationService aProductApplicationService) {
+    protected RabbitMQProductDiscussionRequestedListener(ProductApplicationService aProductApplicationService) {
 
         super();
 
@@ -61,53 +58,31 @@ public class RabbitMQProductDiscussionRequestedListener
         String tenantId = reader.eventStringValue("tenantId.id");
         String productId = reader.eventStringValue("product.id");
 
-        this.productApplicationService.startDiscussionInitiation(
-                new StartDiscussionInitiationCommand(
-                        tenantId,
-                        productId));
+        this.productApplicationService.startDiscussionInitiation(new StartDiscussionInitiationCommand(tenantId, productId));
 
         Properties parameters = this.parametersFrom(reader);
         PropertiesSerializer serializer = PropertiesSerializer.instance();
         String serialization = serializer.serialize(parameters);
         String commandId = this.commandIdFrom(parameters);
 
-        this.messageProducer()
-            .send(
-                serialization,
-                MessageParameters
-                    .durableTextParameters(
-                            COMMAND,
-                            commandId,
-                            new Date()))
-            .close();
+        this.messageProducer().send(serialization, MessageParameters.durableTextParameters(COMMAND, commandId, new Date())).close();
     }
 
     @Override
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.agilepm.domain.model.product.ProductCreated",
-                "com.saasovation.agilepm.domain.model.product.ProductDiscussionRequested"
-                };
+        return new String[]{"com.saasovation.agilepm.domain.model.product.ProductCreated", "com.saasovation.agilepm.domain.model.product.ProductDiscussionRequested"};
     }
 
     private String commandIdFrom(Properties aProperties) {
-        String commandId =
-                aProperties.getProperty("tenantId")
-                + ":"
-                + aProperties.getProperty("productId");
+        String commandId = aProperties.getProperty("tenantId") + ":" + aProperties.getProperty("productId");
 
         return commandId;
     }
 
     private MessageProducer messageProducer() {
-        Exchange exchange =
-            Exchange.fanOutInstance(
-                    ConnectionSettings.instance(),
-                    Exchanges.COLLABORATION_EXCHANGE_NAME,
-                    true);
+        Exchange exchange = Exchange.fanOutInstance(ConnectionSettings.instance(), Exchanges.COLLABORATION_EXCHANGE_NAME, true);
 
-        MessageProducer messageProducer =
-                MessageProducer.instance(exchange);
+        MessageProducer messageProducer = MessageProducer.instance(exchange);
 
         return messageProducer;
     }
@@ -117,27 +92,19 @@ public class RabbitMQProductDiscussionRequestedListener
 
         properties.put("command", COMMAND);
 
-        properties.put("tenantId",
-                aReader.eventStringValue("tenantId.id"));
+        properties.put("tenantId", aReader.eventStringValue("tenantId.id"));
 
-        ProductDiscussionExclusiveOwnerId exclusiveOwnerId =
-                new ProductDiscussionExclusiveOwnerId(
-                        aReader.eventStringValue("productId.id"));
+        ProductDiscussionExclusiveOwnerId exclusiveOwnerId = new ProductDiscussionExclusiveOwnerId(aReader.eventStringValue("productId.id"));
 
-        properties.put("exclusiveOwnerId",
-                exclusiveOwnerId.encoded());
+        properties.put("exclusiveOwnerId", exclusiveOwnerId.encoded());
 
-        properties.put("forumSubject",
-                "ProjectOvation Forum: " + aReader.eventStringValue("name"));
+        properties.put("forumSubject", "ProjectOvation Forum: " + aReader.eventStringValue("name"));
 
-        properties.put("forumDescription",
-                "About: " + aReader.eventStringValue("description"));
+        properties.put("forumDescription", "About: " + aReader.eventStringValue("description"));
 
-        properties.put("discussionSubject",
-                "Product Discussion: " + aReader.eventStringValue("name"));
+        properties.put("discussionSubject", "Product Discussion: " + aReader.eventStringValue("name"));
 
-        String productOwnerId =
-                aReader.eventStringValue("productOwnerId.id");
+        String productOwnerId = aReader.eventStringValue("productOwnerId.id");
 
         properties.put("creatorId", productOwnerId);
 

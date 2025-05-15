@@ -23,8 +23,7 @@ public class RabbitMQBacklogItemCommittedListener extends ExchangeListener {
 
     private SprintApplicationService sprintApplicationService;
 
-    public RabbitMQBacklogItemCommittedListener(
-            SprintApplicationService aSprintApplicationService) {
+    public RabbitMQBacklogItemCommittedListener(SprintApplicationService aSprintApplicationService) {
 
         super();
 
@@ -44,18 +43,12 @@ public class RabbitMQBacklogItemCommittedListener extends ExchangeListener {
         String backlogItemId = reader.eventStringValue("backlogItemId.id");
         String committedToSprintId = reader.eventStringValue("committedToSprintId.id");
 
-        this.sprintApplicationService().commitBacklogItemToSprint(
-                new CommitBacklogItemToSprintCommand(
-                    tenantId,
-                    committedToSprintId,
-                    backlogItemId));
+        this.sprintApplicationService().commitBacklogItemToSprint(new CommitBacklogItemToSprintCommand(tenantId, committedToSprintId, backlogItemId));
     }
 
     @Override
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.agilepm.domain.model.product.backlogitem.BacklogItemCommitted"
-                };
+        return new String[]{"com.saasovation.agilepm.domain.model.product.backlogitem.BacklogItemCommitted"};
     }
 
     private SprintApplicationService sprintApplicationService() {

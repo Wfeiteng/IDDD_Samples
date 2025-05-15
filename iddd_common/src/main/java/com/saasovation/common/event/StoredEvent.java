@@ -64,11 +64,8 @@ public class StoredEvent extends AssertionConcern {
                     + e.getMessage());
         }
 
-        T domainEvent =
-            EventSerializer
-                .instance()
-                .deserialize(this.eventBody(), domainEventClass);
-
+        T domainEvent = EventSerializer.instance()
+                                        .deserialize(this.eventBody(), domainEventClass);
         return domainEvent;
     }
 

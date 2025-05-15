@@ -37,13 +37,8 @@ public class ForumApplicationService {
     private ForumQueryService forumQueryService;
     private ForumRepository forumRepository;
 
-    public ForumApplicationService(
-            ForumQueryService aForumQueryService,
-            ForumRepository aForumRepository,
-            ForumIdentityService aForumIdentityService,
-            DiscussionQueryService aDiscussionQueryService,
-            DiscussionRepository aDiscussionRepository,
-            CollaboratorService aCollaboratorService) {
+    public ForumApplicationService(ForumQueryService aForumQueryService, ForumRepository aForumRepository, ForumIdentityService aForumIdentityService,
+                                   DiscussionQueryService aDiscussionQueryService, DiscussionRepository aDiscussionRepository, CollaboratorService aCollaboratorService) {
 
         super();
 
@@ -55,154 +50,87 @@ public class ForumApplicationService {
         this.forumRepository = aForumRepository;
     }
 
-    public void assignModeratorToForum(
-            String aTenantId,
-            String aForumId,
-            String aModeratorId) {
+    public void assignModeratorToForum(String aTenantId, String aForumId, String aModeratorId) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        Forum forum =
-                this.forumRepository()
-                    .forumOfId(
-                            tenant,
-                            new ForumId(aForumId));
+        Forum forum = this.forumRepository().forumOfId(tenant, new ForumId(aForumId));
 
-        Moderator moderator =
-                this.collaboratorService().moderatorFrom(tenant, aModeratorId);
+        Moderator moderator = this.collaboratorService().moderatorFrom(tenant, aModeratorId);
 
         forum.assignModerator(moderator);
 
         this.forumRepository().save(forum);
     }
 
-    public void changeForumDescription(
-            String aTenantId,
-            String aForumId,
-            String aDescription) {
+    public void changeForumDescription(String aTenantId, String aForumId, String aDescription) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        Forum forum =
-                this.forumRepository()
-                    .forumOfId(
-                            tenant,
-                            new ForumId(aForumId));
+        Forum forum = this.forumRepository().forumOfId(tenant, new ForumId(aForumId));
 
         forum.changeDescription(aDescription);
 
         this.forumRepository().save(forum);
     }
 
-    public void changeForumSubject(
-            String aTenantId,
-            String aForumId,
-            String aSubject) {
+    public void changeForumSubject(String aTenantId, String aForumId, String aSubject) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        Forum forum =
-                this.forumRepository()
-                    .forumOfId(
-                            tenant,
-                            new ForumId(aForumId));
+        Forum forum = this.forumRepository().forumOfId(tenant, new ForumId(aForumId));
 
         forum.changeSubject(aSubject);
 
         this.forumRepository().save(forum);
     }
 
-    public void closeForum(
-            String aTenantId,
-            String aForumId) {
+    public void closeForum(String aTenantId, String aForumId) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        Forum forum =
-                this.forumRepository()
-                    .forumOfId(
-                            tenant,
-                            new ForumId(aForumId));
+        Forum forum = this.forumRepository().forumOfId(tenant, new ForumId(aForumId));
 
         forum.close();
 
         this.forumRepository().save(forum);
     }
 
-    public void reopenForum(
-            String aTenantId,
-            String aForumId) {
+    public void reopenForum(String aTenantId, String aForumId) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        Forum forum =
-                this.forumRepository()
-                    .forumOfId(
-                            tenant,
-                            new ForumId(aForumId));
+        Forum forum = this.forumRepository().forumOfId(tenant, new ForumId(aForumId));
 
         forum.reopen();
 
         this.forumRepository().save(forum);
     }
 
-    public void startForum(
-            String aTenantId,
-            String aCreatorId,
-            String aModeratorId,
-            String aSubject,
-            String aDescription,
-            ForumCommandResult aResult) {
+    public void startForum(String aTenantId, String aCreatorId, String aModeratorId, String aSubject, String aDescription, ForumCommandResult aResult) {
 
-        Forum forum =
-                this.startNewForum(
-                    new Tenant(aTenantId),
-                    aCreatorId,
-                    aModeratorId,
-                    aSubject,
-                    aDescription,
-                    null);
+        Forum forum = this.startNewForum(new Tenant(aTenantId), aCreatorId, aModeratorId, aSubject, aDescription, null);
 
         if (aResult != null) {
             aResult.resultingForumId(forum.forumId().id());
         }
     }
 
-    public void startExclusiveForum(
-            String aTenantId,
-            String anExclusiveOwner,
-            String aCreatorId,
-            String aModeratorId,
-            String aSubject,
-            String aDescription,
-            ForumCommandResult aResult) {
+    public void startExclusiveForum(String aTenantId, String anExclusiveOwner, String aCreatorId, String aModeratorId, String aSubject, String aDescription,
+                                    ForumCommandResult aResult) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        String forumId =
-                this.forumQueryService()
-                    .forumIdOfExclusiveOwner(
-                            aTenantId,
-                            anExclusiveOwner);
+        String forumId = this.forumQueryService().forumIdOfExclusiveOwner(aTenantId, anExclusiveOwner);
 
         Forum forum = null;
 
         if (forumId != null) {
-            forum = this.forumRepository()
-                        .forumOfId(
-                                tenant,
-                                new ForumId(forumId));
+            forum = this.forumRepository().forumOfId(tenant, new ForumId(forumId));
         }
 
         if (forum == null) {
-            forum =
-                    this.startNewForum(
-                        tenant,
-                        aCreatorId,
-                        aModeratorId,
-                        aSubject,
-                        aDescription,
-                        anExclusiveOwner);
+            forum = this.startNewForum(tenant, aCreatorId, aModeratorId, aSubject, aDescription, anExclusiveOwner);
         }
 
         if (aResult != null) {
@@ -210,69 +138,35 @@ public class ForumApplicationService {
         }
     }
 
-    public void startExclusiveForumWithDiscussion(
-            String aTenantId,
-            String anExclusiveOwner,
-            String aCreatorId,
-            String aModeratorId,
-            String anAuthorId,
-            String aForumSubject,
-            String aForumDescription,
-            String aDiscussionSubject,
-            ForumCommandResult aResult) {
+    public void startExclusiveForumWithDiscussion(String aTenantId, String anExclusiveOwner, String aCreatorId, String aModeratorId, String anAuthorId, String aForumSubject,
+                                                  String aForumDescription, String aDiscussionSubject, ForumCommandResult aResult) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        String forumId =
-                this.forumQueryService()
-                    .forumIdOfExclusiveOwner(
-                            aTenantId,
-                            anExclusiveOwner);
+        String forumId = this.forumQueryService().forumIdOfExclusiveOwner(aTenantId, anExclusiveOwner);
 
         Forum forum = null;
 
         if (forumId != null) {
-            forum = this.forumRepository()
-                        .forumOfId(
-                                tenant,
-                                new ForumId(forumId));
+            forum = this.forumRepository().forumOfId(tenant, new ForumId(forumId));
         }
 
         if (forum == null) {
-            forum = this.startNewForum(
-                    tenant,
-                    aCreatorId,
-                    aModeratorId,
-                    aForumSubject,
-                    aForumDescription,
-                    anExclusiveOwner);
+            forum = this.startNewForum(tenant, aCreatorId, aModeratorId, aForumSubject, aForumDescription, anExclusiveOwner);
         }
 
-        String discussionId =
-                this.discussionQueryService()
-                    .discussionIdOfExclusiveOwner(
-                            aTenantId,
-                            anExclusiveOwner);
+        String discussionId = this.discussionQueryService().discussionIdOfExclusiveOwner(aTenantId, anExclusiveOwner);
 
         Discussion discussion = null;
 
         if (discussionId != null) {
-            discussion = this.discussionRepository()
-                             .discussionOfId(
-                                     tenant,
-                                     new DiscussionId(discussionId));
+            discussion = this.discussionRepository().discussionOfId(tenant, new DiscussionId(discussionId));
         }
 
         if (discussion == null) {
-            Author author =
-                    this.collaboratorService().authorFrom(tenant, anAuthorId);
+            Author author = this.collaboratorService().authorFrom(tenant, anAuthorId);
 
-            discussion =
-                    forum.startDiscussionFor(
-                            this.forumIdentityService(),
-                            author,
-                            aDiscussionSubject,
-                            anExclusiveOwner);
+            discussion = forum.startDiscussionFor(this.forumIdentityService(), author, aDiscussionSubject, anExclusiveOwner);
 
             this.discussionRepository().save(discussion);
         }
@@ -307,29 +201,13 @@ public class ForumApplicationService {
         return this.forumRepository;
     }
 
-    private Forum startNewForum(
-            Tenant aTenant,
-            String aCreatorId,
-            String aModeratorId,
-            String aSubject,
-            String aDescription,
-            String anExclusiveOwner) {
+    private Forum startNewForum(Tenant aTenant, String aCreatorId, String aModeratorId, String aSubject, String aDescription, String anExclusiveOwner) {
 
-        Creator creator =
-                this.collaboratorService().creatorFrom(aTenant, aCreatorId);
+        Creator creator = this.collaboratorService().creatorFrom(aTenant, aCreatorId);
 
-        Moderator moderator =
-                this.collaboratorService().moderatorFrom(aTenant, aModeratorId);
+        Moderator moderator = this.collaboratorService().moderatorFrom(aTenant, aModeratorId);
 
-        Forum newForum =
-            new Forum(
-                    aTenant,
-                    this.forumRepository().nextIdentity(),
-                    creator,
-                    moderator,
-                    aSubject,
-                    aDescription,
-                    anExclusiveOwner);
+        Forum newForum = new Forum(aTenant, this.forumRepository().nextIdentity(), creator, moderator, aSubject, aDescription, anExclusiveOwner);
 
         this.forumRepository().save(newForum);
 

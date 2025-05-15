@@ -34,26 +34,15 @@ public class ResultSetObjectMapper<T> {
     private ResultSet resultSet;
     private Class<? extends T> resultType;
 
-    public ResultSetObjectMapper(
-            ResultSet aResultSet,
-            Class<T> aResultType,
-            JoinOn aJoinOn) {
-
+    public ResultSetObjectMapper(ResultSet aResultSet, Class<T> aResultType, JoinOn aJoinOn) {
         super();
-
         this.joinOn = aJoinOn;
         this.resultSet = aResultSet;
         this.resultType = aResultType;
     }
 
-    public ResultSetObjectMapper(
-            ResultSet aResultSet,
-            Class<? extends T> aResultType,
-            String aColumnPrefix,
-            JoinOn aJoinOn) {
-
+    public ResultSetObjectMapper(ResultSet aResultSet, Class<? extends T> aResultType, String aColumnPrefix, JoinOn aJoinOn) {
         super();
-
         this.columnPrefix = aColumnPrefix;
         this.joinOn = aJoinOn;
         this.resultSet = aResultSet;
@@ -79,17 +68,12 @@ public class ResultSetObjectMapper<T> {
                     field.setAccessible(true);
                     field.set(object, columnValue);
                 } catch (Exception e) {
-                    throw new IllegalStateException(
-                            "Cannot map to: "
-                            + this.resultType.getSimpleName()
-                            + "#"
-                            + columnName);
+                    throw new IllegalStateException("Cannot map to: " + this.resultType.getSimpleName() + "#" + columnName);
                 }
             } else {
                 String objectPrefix = this.toObjectPrefix(columnName);
 
-                if (!associationsToMap.contains(objectPrefix) &&
-                        this.hasAssociation(this.resultSet(), objectPrefix)) {
+                if (!associationsToMap.contains(objectPrefix) && this.hasAssociation(this.resultSet(), objectPrefix)) {
 
                     associationsToMap.add(field.getName());
                 }
@@ -152,7 +136,7 @@ public class ResultSetObjectMapper<T> {
                     value = this.resultSet().getString(aColumnName);
                 } else if (typeName.equals("java.lang.Integer")) {
                     tempStr = this.resultSet().getString(aColumnName);
-                    value = tempStr == null ? null: Integer.parseInt(tempStr);
+                    value = tempStr == null ? null : Integer.parseInt(tempStr);
                 } else if (typeName.equals("java.lang.Long")) {
                     tempStr = this.resultSet().getString(aColumnName);
                     value = tempStr == null ? null : Long.parseLong(tempStr);
@@ -166,7 +150,7 @@ public class ResultSetObjectMapper<T> {
                     }
                 } else if (typeName.equals("java.lang.Short")) {
                     tempStr = this.resultSet().getString(aColumnName);
-                    value = tempStr == null ? null: Short.parseShort(tempStr);
+                    value = tempStr == null ? null : Short.parseShort(tempStr);
                 } else if (typeName.equals("java.lang.Float")) {
                     tempStr = this.resultSet().getString(aColumnName);
                     value = tempStr == null ? null : Float.parseFloat(tempStr);
@@ -177,12 +161,7 @@ public class ResultSetObjectMapper<T> {
             }
 
         } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "Cannot map "
-                            + aColumnName
-                            + " because: "
-                            + e.getMessage(),
-                    e);
+            throw new IllegalArgumentException("Cannot map " + aColumnName + " because: " + e.getMessage(), e);
         }
 
         return value;
@@ -234,9 +213,7 @@ public class ResultSetObjectMapper<T> {
         return buf.toString();
     }
 
-    private boolean hasAssociation(
-            ResultSet aResultSet,
-            String anObjectPrefix) {
+    private boolean hasAssociation(ResultSet aResultSet, String anObjectPrefix) {
 
         try {
             ResultSetMetaData metaData = aResultSet.getMetaData();
@@ -245,18 +222,14 @@ public class ResultSetObjectMapper<T> {
             for (int idx = 1; idx <= totalColumns; ++idx) {
                 String columnName = metaData.getColumnLabel(idx);
 
-                if (columnName.startsWith(anObjectPrefix) &&
-                        this.joinOn().isJoinedOn(aResultSet)) {
+                if (columnName.startsWith(anObjectPrefix) && this.joinOn().isJoinedOn(aResultSet)) {
 
                     return true;
                 }
             }
 
         } catch (Exception e) {
-            throw new IllegalStateException(
-                    "Cannot read result metadata because: "
-                            + e.getMessage(),
-                    e);
+            throw new IllegalStateException("Cannot read result metadata because: " + e.getMessage(), e);
         }
 
         return false;
@@ -277,13 +250,9 @@ public class ResultSetObjectMapper<T> {
         return this.joinOn;
     }
 
-    private void mapAssociations(
-            T anObject,
-            ResultSet aResultSet,
-            Set<String> anAssociationsToMap) {
+    private void mapAssociations(T anObject, ResultSet aResultSet, Set<String> anAssociationsToMap) {
 
-        Map<String, Collection<Object>> mappedCollections =
-                new HashMap<String, Collection<Object>>();
+        Map<String, Collection<Object>> mappedCollections = new HashMap<String, Collection<Object>>();
 
         String currentAssociationName = null;
 
@@ -326,12 +295,7 @@ public class ResultSetObjectMapper<T> {
 
                     String columnName = this.fieldNameToColumnName(fieldName);
 
-                    ResultSetObjectMapper<Object> mapper =
-                            new ResultSetObjectMapper<Object>(
-                                    aResultSet,
-                                    associationFieldType,
-                                    this.toObjectPrefix(columnName),
-                                    this.joinOn());
+                    ResultSetObjectMapper<Object> mapper = new ResultSetObjectMapper<Object>(aResultSet, associationFieldType, this.toObjectPrefix(columnName), this.joinOn());
 
                     Object associationObject = mapper.mapResultToType();
 
@@ -344,12 +308,7 @@ public class ResultSetObjectMapper<T> {
             }
 
         } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "Cannot map object association for "
-                            + currentAssociationName
-                            + " because: "
-                            + e.getMessage(),
-                    e);
+            throw new IllegalArgumentException("Cannot map object association for " + currentAssociationName + " because: " + e.getMessage(), e);
         }
     }
 
@@ -362,7 +321,7 @@ public class ResultSetObjectMapper<T> {
     }
 
     private String toObjectPrefix(String aColumnName) {
-        String objectPrefix = "o_"+aColumnName+"_";
+        String objectPrefix = "o_" + aColumnName + "_";
 
         return objectPrefix;
     }

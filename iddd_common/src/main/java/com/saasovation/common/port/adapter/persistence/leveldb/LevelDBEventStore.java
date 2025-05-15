@@ -79,11 +79,13 @@ public class LevelDBEventStore
         uow.lock(lockKey.key());
 
         String eventSerialization =
-                EventSerializer.instance().serialize(aDomainEvent);
+                EventSerializer.instance()
+                               .serialize(aDomainEvent);
 
         StoredEvent storedEvent =
                 new StoredEvent(
-                        aDomainEvent.getClass().getName(),
+                        aDomainEvent.getClass()
+                                    .getName(),
                         aDomainEvent.occurredOn(),
                         eventSerialization,
                         this.nextStoredEventIdSequence());
@@ -95,9 +97,10 @@ public class LevelDBEventStore
 
     @Override
     public void close() {
-        this.database().put(
-                INTERNAL_EVENT_ID,
-                ("" + this.currentStoredEventIdSequence()).getBytes());
+        this.database()
+            .put(
+                    INTERNAL_EVENT_ID,
+                    ("" + this.currentStoredEventIdSequence()).getBytes());
     }
 
     @Override
@@ -108,7 +111,8 @@ public class LevelDBEventStore
     private boolean cacheStoredEventIdSequence() {
         boolean cached = false;
 
-        byte[] sequenceValue = this.database().get(INTERNAL_EVENT_ID);
+        byte[] sequenceValue = this.database()
+                                   .get(INTERNAL_EVENT_ID);
 
         if (sequenceValue != null) {
             this.setStoredEventIdSequence(Long.parseLong(new String(sequenceValue)));
@@ -117,7 +121,8 @@ public class LevelDBEventStore
             // sequence. a missing sequence on open indicates the
             // need for a repair (unless the event store is empty).
 
-            this.database().delete(INTERNAL_EVENT_ID);
+            this.database()
+                .delete(INTERNAL_EVENT_ID);
 
             cached = true;
 
@@ -227,7 +232,7 @@ public class LevelDBEventStore
             if (aLastConfirmedSequence > 0) {
                 System.out.println(
                         "REPAIRED EVENT STORE HAS VALID SEQUENCE: "
-                        + aLastConfirmedSequence);
+                                + aLastConfirmedSequence);
             }
 
             this.lastConfirmedSequence = aLastConfirmedSequence;

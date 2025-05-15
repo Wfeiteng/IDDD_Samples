@@ -42,20 +42,11 @@ public class UserResource extends AbstractResource {
 
     @GET
     @Path("{username}/autenticatedWith/{password}")
-    @Produces({ OvationsMediaType.ID_OVATION_TYPE })
-    public Response getAuthenticUser(
-            @PathParam("tenantId") String aTenantId,
-            @PathParam("username") String aUsername,
-            @PathParam("password") String aPassword,
-            @Context Request aRequest) {
+    @Produces({OvationsMediaType.ID_OVATION_TYPE})
+    public Response getAuthenticUser(@PathParam("tenantId") String aTenantId, @PathParam("username") String aUsername, @PathParam("password") String aPassword,
+                                     @Context Request aRequest) {
 
-        UserDescriptor userDescriptor =
-                this.identityApplicationService()
-                    .authenticateUser(
-                            new AuthenticateUserCommand(
-                                    aTenantId,
-                                    aUsername,
-                                    aPassword));
+        UserDescriptor userDescriptor = this.identityApplicationService().authenticateUser(new AuthenticateUserCommand(aTenantId, aUsername, aPassword));
 
         if (userDescriptor.isNullDescriptor()) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -68,11 +59,8 @@ public class UserResource extends AbstractResource {
 
     @GET
     @Path("{username}")
-    @Produces({ OvationsMediaType.ID_OVATION_TYPE })
-    public Response getUser(
-            @PathParam("tenantId") String aTenantId,
-            @PathParam("username") String aUsername,
-            @Context Request aRequest) {
+    @Produces({OvationsMediaType.ID_OVATION_TYPE})
+    public Response getUser(@PathParam("tenantId") String aTenantId, @PathParam("username") String aUsername, @Context Request aRequest) {
 
         User user = this.identityApplicationService().user(aTenantId, aUsername);
 
@@ -87,22 +75,15 @@ public class UserResource extends AbstractResource {
 
     @GET
     @Path("{username}/inRole/{role}")
-    @Produces({ OvationsMediaType.ID_OVATION_TYPE })
-    public Response getUserInRole(
-            @PathParam("tenantId") String aTenantId,
-            @PathParam("username") String aUsername,
-            @PathParam("role") String aRoleName) {
+    @Produces({OvationsMediaType.ID_OVATION_TYPE})
+    public Response getUserInRole(@PathParam("tenantId") String aTenantId, @PathParam("username") String aUsername, @PathParam("role") String aRoleName) {
 
         Response response = null;
 
         User user = null;
 
         try {
-            user = this.accessApplicationService()
-                       .userInRole(
-                               aTenantId,
-                               aUsername,
-                               aRoleName);
+            user = this.accessApplicationService().userInRole(aTenantId, aUsername, aRoleName);
         } catch (Exception e) {
             // fall through
         }
@@ -116,38 +97,24 @@ public class UserResource extends AbstractResource {
         return response;
     }
 
-    private Response userDescriptorResponse(
-            Request aRequest,
-            UserDescriptor aUserDescriptor) {
+    private Response userDescriptorResponse(Request aRequest, UserDescriptor aUserDescriptor) {
 
         Response response = null;
 
         String representation = ObjectSerializer.instance().serialize(aUserDescriptor);
 
-        response =
-            Response
-                .ok(representation)
-                .cacheControl(this.cacheControlFor(30))
-                .build();
+        response = Response.ok(representation).cacheControl(this.cacheControlFor(30)).build();
 
         return response;
     }
 
     private Response userInRoleResponse(User aUser, String aRoleName) {
 
-        UserInRoleRepresentation userInRoleRepresentation =
-                new UserInRoleRepresentation(aUser, aRoleName);
+        UserInRoleRepresentation userInRoleRepresentation = new UserInRoleRepresentation(aUser, aRoleName);
 
-        String representation =
-                ObjectSerializer
-                    .instance()
-                    .serialize(userInRoleRepresentation);
+        String representation = ObjectSerializer.instance().serialize(userInRoleRepresentation);
 
-        Response response =
-                Response
-                    .ok(representation)
-                    .cacheControl(this.cacheControlFor(60))
-                    .build();
+        Response response = Response.ok(representation).cacheControl(this.cacheControlFor(60)).build();
 
         return response;
     }
@@ -161,23 +128,11 @@ public class UserResource extends AbstractResource {
         ResponseBuilder conditionalBuilder = aRequest.evaluatePreconditions(eTag);
 
         if (conditionalBuilder != null) {
-            response =
-                    conditionalBuilder
-                        .cacheControl(this.cacheControlFor(3600))
-                        .tag(eTag)
-                        .build();
+            response = conditionalBuilder.cacheControl(this.cacheControlFor(3600)).tag(eTag).build();
         } else {
-            String representation =
-                    ObjectSerializer
-                        .instance()
-                        .serialize(new UserRepresentation(aUser));
+            String representation = ObjectSerializer.instance().serialize(new UserRepresentation(aUser));
 
-            response =
-                    Response
-                        .ok(representation)
-                        .cacheControl(this.cacheControlFor(3600))
-                        .tag(eTag)
-                        .build();
+            response = Response.ok(representation).cacheControl(this.cacheControlFor(3600)).tag(eTag).build();
         }
 
         return response;

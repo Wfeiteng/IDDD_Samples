@@ -9,9 +9,7 @@ public class SprintApplicationService {
     private BacklogItemRepository backlogItemRepository;
     private SprintRepository sprintRepository;
 
-    public SprintApplicationService(
-            SprintRepository aSprintRepository,
-            BacklogItemRepository aBacklogItemRepository) {
+    public SprintApplicationService(SprintRepository aSprintRepository, BacklogItemRepository aBacklogItemRepository) {
 
         super();
 
@@ -19,26 +17,20 @@ public class SprintApplicationService {
         this.sprintRepository = aSprintRepository;
     }
 
-    public void commitBacklogItemToSprint(
-            CommitBacklogItemToSprintCommand aCommand) {
+    public void commitBacklogItemToSprint(CommitBacklogItemToSprintCommand aCommand) {
 
         TenantId tenantId = new TenantId(aCommand.getTenantId());
 
-        Sprint sprint =
-                this.sprintRepository()
-                    .sprintOfId(
-                            tenantId,
-                            new SprintId(aCommand.getSprintId()));
+        Sprint sprint = this.sprintRepository()
+                            .sprintOfId(tenantId, new SprintId(aCommand.getSprintId()));
 
-        BacklogItem backlogItem =
-                this.backlogItemRepository()
-                    .backlogItemOfId(
-                            tenantId,
-                            new BacklogItemId(aCommand.getBacklogItemId()));
+        BacklogItem backlogItem = this.backlogItemRepository()
+                                      .backlogItemOfId(tenantId, new BacklogItemId(aCommand.getBacklogItemId()));
 
         sprint.commit(backlogItem);
 
-        this.sprintRepository().save(sprint);
+        this.sprintRepository()
+            .save(sprint);
     }
 
     private BacklogItemRepository backlogItemRepository() {

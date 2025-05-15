@@ -6,10 +6,7 @@ public class CommitBacklogItemToSprintCommand {
     private String sprintId;
     private String tenantId;
 
-    public CommitBacklogItemToSprintCommand(
-            String tenantId,
-            String sprintId,
-            String backlogItemId) {
+    public CommitBacklogItemToSprintCommand(String tenantId, String sprintId, String backlogItemId) {
 
         super();
 

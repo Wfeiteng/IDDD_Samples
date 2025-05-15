@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <trees>
+     <tree path="/iddd_agilepm/src/main/java/com/saasovation/agilepm/domain/model/product/backlogitem/BusinessPriorityCalculator.java"
+           title="有dao"/>
+     <tree path="/iddd_agilepm/src/main/java/com/saasovation/agilepm/port/adapter/messaging" title="mq cousume"/>
+     <tree path="/iddd_collaboration/src/main/java/com/saasovation/collaboration/port/adapter/event/FollowStoreEventDispatcher.java"
+           title="read repeat !!"/>
+     <tree path="/iddd_identityaccess/src/main/java/com/saasovation/identityaccess/domain/model/identity"
+           title="unread"/>
+     <tree path="/iddd_identityaccess/src/main/java/com/saasovation/identityaccess/application" title="unRead"
+           extension="" presentableText="" tooltipTitle=""/>
+     <tree path="/iddd_identityaccess/src/main/java/com/saasovation/identityaccess/application/representation"
+           title="readed"/>
+    <tree path="/iddd_identityaccess/src/main/java/com/saasovation/identityaccess/application/command" title="readed"/>
+    <tree path="/iddd_common/src/main/java/com/saasovation/common/port" title="unRead"/>
+    <tree path="/iddd_common/src/main/java/com/saasovation/common/domain" title="" extension="" presentableText=""
+          tooltipTitle="" icon="" textColor="" backgroundColor=""/>
+</trees>

@@ -55,13 +55,9 @@ public class LevelDBEventStore implements EventStore {
     @Override
     public void appendWith(EventStreamId aStartingIdentity, List<DomainEvent> anEvents) {
 
-        LoggableJournalEntry[] entries =
-                new LoggableJournalEntry[anEvents.size()];
+        LoggableJournalEntry[] entries = new LoggableJournalEntry[anEvents.size()];
 
-        JournalKeyProvider keyProvider =
-                new StreamKeyProvider(
-                        aStartingIdentity.streamName(),
-                        aStartingIdentity.streamVersion());
+        JournalKeyProvider keyProvider = new StreamKeyProvider(aStartingIdentity.streamName(), aStartingIdentity.streamVersion());
 
         int entryIndex = 0;
 
@@ -69,17 +65,9 @@ public class LevelDBEventStore implements EventStore {
 
             String streamKey = keyProvider.nextReferenceKey();
 
-            String eventValue =
-                    this.journal()
-                        .valueWithMetadata(
-                                this.serializer().serialize(event),
-                                event.getClass().getName());
+            String eventValue = this.journal().valueWithMetadata(this.serializer().serialize(event), event.getClass().getName());
 
-            entries[entryIndex++] =
-                    new LoggableJournalEntry(
-                            eventValue,
-                            streamKey,
-                            keyProvider.primaryResourceName());
+            entries[entryIndex++] = new LoggableJournalEntry(eventValue, streamKey, keyProvider.primaryResourceName());
         }
 
         this.journal().logEntries(entries);
@@ -98,19 +86,12 @@ public class LevelDBEventStore implements EventStore {
         List<DispatchableDomainEvent> events = null;
 
         try {
-            List<LoggedJournalEntry> entries =
-                    this.journal()
-                        .loggedJournalEntriesSince(aLastReceivedEvent);
+            List<LoggedJournalEntry> entries = this.journal().loggedJournalEntriesSince(aLastReceivedEvent);
 
             events = this.toDispatchableDomainEvents(entries);
 
         } catch (Throwable t) {
-            throw new EventStoreException(
-                    "Cannot query event store for events since: "
-                        + aLastReceivedEvent
-                        + " because: "
-                        + t.getMessage(),
-                    t);
+            throw new EventStoreException("Cannot query event store for events since: " + aLastReceivedEvent + " because: " + t.getMessage(), t);
         }
 
         return events;
@@ -123,15 +104,9 @@ public class LevelDBEventStore implements EventStore {
         int version = 0;
 
         try {
-            JournalKeyProvider keyProvider =
-                new StreamKeyProvider(
-                        anIdentity.streamName(),
-                        anIdentity.streamVersion());
+            JournalKeyProvider keyProvider = new StreamKeyProvider(anIdentity.streamName(), anIdentity.streamVersion());
 
-            List<LoggedJournalEntry> entries =
-                    this.journal()
-                        .referencedLoggedJournalEntries(
-                                keyProvider);
+            List<LoggedJournalEntry> entries = this.journal().referencedLoggedJournalEntries(keyProvider);
 
             events = this.toDomainEvents(entries);
 
@@ -143,21 +118,11 @@ public class LevelDBEventStore implements EventStore {
 
         } catch (Throwable t) {
             throw new EventStoreException(
-                    "Cannot query event stream for: "
-                        + anIdentity.streamName()
-                        + " since version: "
-                        + anIdentity.streamVersion()
-                        + " because: "
-                        + t.getMessage(),
-                    t);
+                    "Cannot query event stream for: " + anIdentity.streamName() + " since version: " + anIdentity.streamVersion() + " because: " + t.getMessage(), t);
         }
 
         if (events.isEmpty()) {
-            throw new EventStoreException(
-                    "There is no such event stream: "
-                    + anIdentity.streamName()
-                    + " : "
-                    + anIdentity.streamVersion());
+            throw new EventStoreException("There is no such event stream: " + anIdentity.streamName() + " : " + anIdentity.streamVersion());
         }
 
         return new DefaultEventStream(events, version);
@@ -214,9 +179,7 @@ public class LevelDBEventStore implements EventStore {
     }
 
     @SuppressWarnings("unchecked")
-    private List<DomainEvent> toDomainEvents(
-            List<LoggedJournalEntry> anEntries)
-    throws Exception {
+    private List<DomainEvent> toDomainEvents(List<LoggedJournalEntry> anEntries) throws Exception {
 
         List<DomainEvent> events = new ArrayList<DomainEvent>();
 
@@ -226,11 +189,9 @@ public class LevelDBEventStore implements EventStore {
 
             String eventBody = entry.value();
 
-            Class<DomainEvent> eventClass =
-                    (Class<DomainEvent>) Class.forName(eventClassName);
+            Class<DomainEvent> eventClass = (Class<DomainEvent>) Class.forName(eventClassName);
 
-            DomainEvent domainEvent =
-                    this.serializer().deserialize(eventBody, eventClass);
+            DomainEvent domainEvent = this.serializer().deserialize(eventBody, eventClass);
 
             events.add(domainEvent);
         }
@@ -239,9 +200,7 @@ public class LevelDBEventStore implements EventStore {
     }
 
     @SuppressWarnings("unchecked")
-    private List<DispatchableDomainEvent> toDispatchableDomainEvents(
-            List<LoggedJournalEntry> anEntries)
-    throws Exception {
+    private List<DispatchableDomainEvent> toDispatchableDomainEvents(List<LoggedJournalEntry> anEntries) throws Exception {
 
         List<DispatchableDomainEvent> events = new ArrayList<DispatchableDomainEvent>();
 
@@ -251,11 +210,9 @@ public class LevelDBEventStore implements EventStore {
 
             String eventBody = entry.value();
 
-            Class<DomainEvent> eventClass =
-                    (Class<DomainEvent>) Class.forName(eventClassName);
+            Class<DomainEvent> eventClass = (Class<DomainEvent>) Class.forName(eventClassName);
 
-            DomainEvent domainEvent =
-                    this.serializer().deserialize(eventBody, eventClass);
+            DomainEvent domainEvent = this.serializer().deserialize(eventBody, eventClass);
 
             events.add(new DispatchableDomainEvent(entry.journalSequence(), domainEvent));
         }
@@ -263,8 +220,7 @@ public class LevelDBEventStore implements EventStore {
         return events;
     }
 
-    private class StreamKeyProvider
-            extends JournalKeyProvider {
+    private class StreamKeyProvider extends JournalKeyProvider {
 
         private String streamName;
         private int streamVersion;
@@ -278,10 +234,7 @@ public class LevelDBEventStore implements EventStore {
 
         @Override
         public String nextReferenceKey() {
-            String key =
-                    this.compositeReferenceKeyFrom(
-                                streamName,
-                                ""+streamVersion);
+            String key = this.compositeReferenceKeyFrom(streamName, "" + streamVersion);
 
             ++streamVersion;
 

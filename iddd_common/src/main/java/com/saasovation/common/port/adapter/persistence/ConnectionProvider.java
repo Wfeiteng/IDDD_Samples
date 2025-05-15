@@ -35,10 +35,7 @@ public class ConnectionProvider {
             }
 
         } catch (SQLException e) {
-            throw new IllegalStateException(
-                    "Cannot close connection because: "
-                            + e.getMessage(),
-                    e);
+            throw new IllegalStateException("Cannot close connection because: " + e.getMessage(), e);
         } finally {
             connectionHolder.set(null);
         }
@@ -64,10 +61,7 @@ public class ConnectionProvider {
             }
 
         } catch (SQLException e) {
-            throw new IllegalStateException(
-                    "Connection not provided because: "
-                            + e.getMessage(),
-                    e);
+            throw new IllegalStateException("Connection not provided because: " + e.getMessage(), e);
         }
 
         return connection;

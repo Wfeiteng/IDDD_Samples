@@ -19,9 +19,7 @@ import java.util.Date;
 public interface Process {
 
     public enum ProcessCompletionType {
-        NotCompleted,
-        CompletedNormally,
-        TimedOut
+        NotCompleted, CompletedNormally, TimedOut
     }
 
     public long allowableDuration();

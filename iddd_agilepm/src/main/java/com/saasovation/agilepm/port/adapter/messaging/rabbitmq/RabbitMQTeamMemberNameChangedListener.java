@@ -43,19 +43,11 @@ public class RabbitMQTeamMemberNameChangedListener extends ExchangeListener {
         String username = reader.eventStringValue("username");
         Date occurredOn = reader.occurredOn();
 
-        this.teamApplicationService().changeTeamMemberName(
-                new ChangeTeamMemberNameCommand(
-                    tenantId,
-                    username,
-                    firstName,
-                    lastName,
-                    occurredOn));
+        this.teamApplicationService().changeTeamMemberName(new ChangeTeamMemberNameCommand(tenantId, username, firstName, lastName, occurredOn));
     }
 
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.identityaccess.domain.model.identity.PersonNameChanged"
-                };
+        return new String[]{"com.saasovation.identityaccess.domain.model.identity.PersonNameChanged"};
     }
 
     private TeamApplicationService teamApplicationService() {

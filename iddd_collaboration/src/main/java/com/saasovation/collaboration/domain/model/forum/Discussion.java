@@ -44,8 +44,7 @@ public class Discussion extends EventSourcedRootEntity {
             throw new IllegalStateException("This discussion is already closed.");
         }
 
-        this.apply(new DiscussionClosed(this.tenant(), this.forumId(),
-                    this.discussionId(), this.exclusiveOwner()));
+        this.apply(new DiscussionClosed(this.tenant(), this.forumId(), this.discussionId(), this.exclusiveOwner()));
     }
 
     public boolean isClosed() {
@@ -64,32 +63,14 @@ public class Discussion extends EventSourcedRootEntity {
         return this.forumId;
     }
 
-    public Post post(
-            ForumIdentityService aForumIdentityService,
-            Author anAuthor,
-            String aSubject,
-            String aBodyText) {
+    public Post post(ForumIdentityService aForumIdentityService, Author anAuthor, String aSubject, String aBodyText) {
 
         return this.post(aForumIdentityService, null, anAuthor, aSubject, aBodyText);
     }
 
-    public Post post(
-            ForumIdentityService aForumIdentityService,
-            PostId aReplyToPost,
-            Author anAuthor,
-            String aSubject,
-            String aBodyText) {
+    public Post post(ForumIdentityService aForumIdentityService, PostId aReplyToPost, Author anAuthor, String aSubject, String aBodyText) {
 
-        Post post =
-            new Post(
-                    this.tenant(),
-                    this.forumId(),
-                    this.discussionId(),
-                    aReplyToPost,
-                    aForumIdentityService.nextPostId(),
-                    anAuthor,
-                    aSubject,
-                    aBodyText);
+        Post post = new Post(this.tenant(), this.forumId(), this.discussionId(), aReplyToPost, aForumIdentityService.nextPostId(), anAuthor, aSubject, aBodyText);
 
         return post;
     }
@@ -100,8 +81,7 @@ public class Discussion extends EventSourcedRootEntity {
             throw new IllegalStateException("The discussion is not closed.");
         }
 
-        this.apply(new DiscussionReopened(this.tenant(), this.forumId(),
-                    this.discussionId(), this.exclusiveOwner()));
+        this.apply(new DiscussionReopened(this.tenant(), this.forumId(), this.discussionId(), this.exclusiveOwner()));
     }
 
     public String subject() {
@@ -118,10 +98,7 @@ public class Discussion extends EventSourcedRootEntity {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             Discussion typedObject = (Discussion) anObject;
-            equalObjects =
-                this.tenant().equals(typedObject.tenant()) &&
-                this.forumId().equals(typedObject.forumId()) &&
-                this.discussionId().equals(typedObject.discussionId());
+            equalObjects = this.tenant().equals(typedObject.tenant()) && this.forumId().equals(typedObject.forumId()) && this.discussionId().equals(typedObject.discussionId());
         }
 
         return equalObjects;
@@ -129,28 +106,17 @@ public class Discussion extends EventSourcedRootEntity {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (87123 * 43)
-            + this.tenant().hashCode()
-            + this.forumId().hashCode()
-            + this.discussionId().hashCode();
+        int hashCodeValue = +(87123 * 43) + this.tenant().hashCode() + this.forumId().hashCode() + this.discussionId().hashCode();
 
         return hashCodeValue;
     }
 
     @Override
     public String toString() {
-        return "Discussion [author=" + author + ", closed=" + closed + ", discussionId=" + discussionId + ", exclusiveOwner="
-                + exclusiveOwner + ", forumId=" + forumId + ", subject=" + subject + ", tenantId=" + tenant + "]";
+        return "Discussion [author=" + author + ", closed=" + closed + ", discussionId=" + discussionId + ", exclusiveOwner=" + exclusiveOwner + ", forumId=" + forumId + ", subject=" + subject + ", tenantId=" + tenant + "]";
     }
 
-    protected Discussion(
-            Tenant aTenantId,
-            ForumId aForumId,
-            DiscussionId aDiscussionId,
-            Author anAuthor,
-            String aSubject,
-            String anExclusiveOwner) {
+    protected Discussion(Tenant aTenantId, ForumId aForumId, DiscussionId aDiscussionId, Author anAuthor, String aSubject, String anExclusiveOwner) {
 
         this();
 
@@ -160,8 +126,7 @@ public class Discussion extends EventSourcedRootEntity {
         this.assertArgumentNotEmpty(aSubject, "The subject must be provided.");
         this.assertArgumentNotNull(aTenantId, "The tenant must be provided.");
 
-        this.apply(new DiscussionStarted(aTenantId, aForumId, aDiscussionId,
-                anAuthor, aSubject, anExclusiveOwner));
+        this.apply(new DiscussionStarted(aTenantId, aForumId, aDiscussionId, anAuthor, aSubject, anExclusiveOwner));
     }
 
     protected Discussion() {

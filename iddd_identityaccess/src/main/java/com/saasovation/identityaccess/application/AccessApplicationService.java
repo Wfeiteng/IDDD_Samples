@@ -52,18 +52,10 @@ public class AccessApplicationService {
 
         TenantId tenantId = new TenantId(aCommand.getTenantId());
 
-        User user =
-                this.userRepository()
-                    .userWithUsername(
-                            tenantId,
-                            aCommand.getUsername());
+        User user = this.userRepository().userWithUsername(tenantId, aCommand.getUsername());
 
         if (user != null) {
-            Role role =
-                    this.roleRepository()
-                        .roleNamed(
-                                tenantId,
-                                aCommand.getRoleName());
+            Role role = this.roleRepository().roleNamed(tenantId, aCommand.getRoleName());
 
             if (role != null) {
                 role.assignUser(user);
@@ -71,11 +63,8 @@ public class AccessApplicationService {
         }
     }
 
-    @Transactional(readOnly=true)
-    public boolean isUserInRole(
-            String aTenantId,
-            String aUsername,
-            String aRoleName) {
+    @Transactional(readOnly = true)
+    public boolean isUserInRole(String aTenantId, String aUsername, String aRoleName) {
 
         User user = this.userInRole(aTenantId, aUsername, aRoleName);
 
@@ -89,41 +78,25 @@ public class AccessApplicationService {
 
         Tenant tenant = this.tenantRepository().tenantOfId(tenantId);
 
-        Role role =
-                tenant.provisionRole(
-                        aCommand.getRoleName(),
-                        aCommand.getDescription(),
-                        aCommand.isSupportsNesting());
+        Role role = tenant.provisionRole(aCommand.getRoleName(), aCommand.getDescription(), aCommand.isSupportsNesting());
 
         this.roleRepository().add(role);
     }
 
-    @Transactional(readOnly=true)
-    public User userInRole(
-            String aTenantId,
-            String aUsername,
-            String aRoleName) {
+    @Transactional(readOnly = true)
+    public User userInRole(String aTenantId, String aUsername, String aRoleName) {
 
         User userInRole = null;
 
         TenantId tenantId = new TenantId(aTenantId);
 
-        User user =
-                this.userRepository()
-                    .userWithUsername(
-                            tenantId,
-                            aUsername);
+        User user = this.userRepository().userWithUsername(tenantId, aUsername);
 
         if (user != null) {
-            Role role =
-                    this.roleRepository()
-                        .roleNamed(tenantId, aRoleName);
+            Role role = this.roleRepository().roleNamed(tenantId, aRoleName);
 
             if (role != null) {
-                GroupMemberService groupMemberService =
-                        new GroupMemberService(
-                                this.userRepository(),
-                                this.groupRepository());
+                GroupMemberService groupMemberService = new GroupMemberService(this.userRepository(), this.groupRepository());
 
                 if (role.isInRole(user, groupMemberService)) {
                     userInRole = user;

@@ -33,16 +33,14 @@ import com.saasovation.common.serializer.ObjectSerializer;
 
 public class LevelDBUnitOfWork {
 
-    private static Map<String,ReentrantLock> keyLocks =
-            new ConcurrentHashMap<String,ReentrantLock>();
+    private static Map<String, ReentrantLock> keyLocks = new ConcurrentHashMap<String, ReentrantLock>();
 
-    private static ThreadLocal<LevelDBUnitOfWork> unitsOfWork =
-            new ThreadLocal<LevelDBUnitOfWork>();
+    private static ThreadLocal<LevelDBUnitOfWork> unitsOfWork = new ThreadLocal<LevelDBUnitOfWork>();
 
     private WriteBatch batch;
     private DB database;
     private List<ReentrantLock> locks;
-    private Map<String,Set<Object>> referenceKeys;
+    private Map<String, Set<Object>> referenceKeys;
     private ObjectSerializer serializer;
 
     public static LevelDBUnitOfWork current() {
@@ -121,7 +119,8 @@ public class LevelDBUnitOfWork {
         Set<Object> keys = this.loadReferenceKeyValues(aKey);
 
         if (!keys.isEmpty()) {
-            singleKey = keys.iterator().next();
+            singleKey = keys.iterator()
+                            .next();
         }
 
         return singleKey;
@@ -188,7 +187,7 @@ public class LevelDBUnitOfWork {
 
         this.database = aDatabase;
         this.locks = new ArrayList<ReentrantLock>(1);
-        this.referenceKeys = new HashMap<String,Set<Object>>();
+        this.referenceKeys = new HashMap<String, Set<Object>>();
         this.serializer = ObjectSerializer.instance();
     }
 
@@ -242,7 +241,8 @@ public class LevelDBUnitOfWork {
             if (currentValues == null) {
                 allValues = new HashSet<Object>();
             } else {
-                Type listType = new TypeToken<HashSet<Object>>() { }.getType();
+                Type listType = new TypeToken<HashSet<Object>>() {
+                }.getType();
 
                 allValues = this.serializer.deserialize(new String(currentValues), listType);
             }

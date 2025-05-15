@@ -25,16 +25,13 @@ import com.saasovation.common.port.adapter.messaging.slothmq.ExchangeListener;
 import com.saasovation.common.port.adapter.messaging.slothmq.ExchangePublisher;
 import com.saasovation.common.serializer.PropertiesSerializer;
 
-public class SlothMQProductDiscussionRequestedListener
-        extends ExchangeListener {
+public class SlothMQProductDiscussionRequestedListener extends ExchangeListener {
 
-    private static final String COMMAND =
-            "com.saasovation.collaboration.discussion.CreateExclusiveDiscussion";
+    private static final String COMMAND = "com.saasovation.collaboration.discussion.CreateExclusiveDiscussion";
 
     private ProductApplicationService productApplicationService;
 
-    protected SlothMQProductDiscussionRequestedListener(
-            ProductApplicationService aProductApplicationService) {
+    protected SlothMQProductDiscussionRequestedListener(ProductApplicationService aProductApplicationService) {
 
         super();
 
@@ -57,10 +54,7 @@ public class SlothMQProductDiscussionRequestedListener
         String tenantId = reader.eventStringValue("tenantId.id");
         String productId = reader.eventStringValue("product.id");
 
-        this.productApplicationService().startDiscussionInitiation(
-                new StartDiscussionInitiationCommand(
-                        tenantId,
-                        productId));
+        this.productApplicationService().startDiscussionInitiation(new StartDiscussionInitiationCommand(tenantId, productId));
 
         Properties parameters = this.parametersFrom(reader);
         PropertiesSerializer serializer = PropertiesSerializer.instance();
@@ -71,10 +65,7 @@ public class SlothMQProductDiscussionRequestedListener
 
     @Override
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.agilepm.domain.model.product.ProductCreated",
-                "com.saasovation.agilepm.domain.model.product.ProductDiscussionRequested"
-                };
+        return new String[]{"com.saasovation.agilepm.domain.model.product.ProductCreated", "com.saasovation.agilepm.domain.model.product.ProductDiscussionRequested"};
     }
 
     @Override
@@ -91,27 +82,19 @@ public class SlothMQProductDiscussionRequestedListener
 
         properties.put("command", COMMAND);
 
-        properties.put("tenantId",
-                aReader.eventStringValue("tenantId.id"));
+        properties.put("tenantId", aReader.eventStringValue("tenantId.id"));
 
-        ProductDiscussionExclusiveOwnerId exclusiveOwnerId =
-                new ProductDiscussionExclusiveOwnerId(
-                        aReader.eventStringValue("productId.id"));
+        ProductDiscussionExclusiveOwnerId exclusiveOwnerId = new ProductDiscussionExclusiveOwnerId(aReader.eventStringValue("productId.id"));
 
-        properties.put("exclusiveOwnerId",
-                exclusiveOwnerId.encoded());
+        properties.put("exclusiveOwnerId", exclusiveOwnerId.encoded());
 
-        properties.put("forumSubject",
-                "ProjectOvation Forum: " + aReader.eventStringValue("name"));
+        properties.put("forumSubject", "ProjectOvation Forum: " + aReader.eventStringValue("name"));
 
-        properties.put("forumDescription",
-                "About: " + aReader.eventStringValue("description"));
+        properties.put("forumDescription", "About: " + aReader.eventStringValue("description"));
 
-        properties.put("discussionSubject",
-                "Product Discussion: " + aReader.eventStringValue("name"));
+        properties.put("discussionSubject", "Product Discussion: " + aReader.eventStringValue("name"));
 
-        String productOwnerId =
-                aReader.eventStringValue("productOwnerId.id");
+        String productOwnerId = aReader.eventStringValue("productOwnerId.id");
 
         properties.put("creatorId", productOwnerId);
 

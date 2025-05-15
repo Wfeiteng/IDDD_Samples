@@ -25,9 +25,7 @@ import com.saasovation.common.port.adapter.persistence.leveldb.AbstractLevelDBRe
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBKey;
 import com.saasovation.common.port.adapter.persistence.leveldb.LevelDBUnitOfWork;
 
-public class LevelDBTeamRepository
-        extends AbstractLevelDBRepository
-        implements TeamRepository {
+public class LevelDBTeamRepository extends AbstractLevelDBRepository implements TeamRepository {
 
     private static final String PRIMARY = "TEAM#1";
     private static final String TEAM_OF_TENANT = "TEAM#2";
@@ -121,9 +119,7 @@ public class LevelDBTeamRepository
     public Team teamNamed(TenantId aTenantId, String aName) {
         LevelDBKey primaryKey = new LevelDBKey(PRIMARY, aTenantId.id(), aName);
 
-        Team team =
-                LevelDBUnitOfWork.readOnly(this.database())
-                    .readObject(primaryKey.key().getBytes(), Team.class);
+        Team team = LevelDBUnitOfWork.readOnly(this.database()).readObject(primaryKey.key().getBytes(), Team.class);
 
         return team;
     }

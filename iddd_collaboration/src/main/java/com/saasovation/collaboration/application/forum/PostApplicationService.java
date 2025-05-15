@@ -30,10 +30,7 @@ public class PostApplicationService {
     private ForumRepository forumRepository;
     private PostRepository postRepository;
 
-    public PostApplicationService(
-            PostRepository aPostRepository,
-            ForumRepository aForumRepository,
-            CollaboratorService aCollaboratorService) {
+    public PostApplicationService(PostRepository aPostRepository, ForumRepository aForumRepository, CollaboratorService aCollaboratorService) {
 
         super();
 
@@ -42,24 +39,13 @@ public class PostApplicationService {
         this.postRepository = aPostRepository;
     }
 
-    public void moderatePost(
-            String aTenantId,
-            String aForumId,
-            String aPostId,
-            String aModeratorId,
-            String aSubject,
-            String aBodyText) {
+    public void moderatePost(String aTenantId, String aForumId, String aPostId, String aModeratorId, String aSubject, String aBodyText) {
 
         Tenant tenant = new Tenant(aTenantId);
 
-        Forum forum =
-                this.forumRepository()
-                    .forumOfId(
-                            tenant,
-                            new ForumId(aForumId));
+        Forum forum = this.forumRepository().forumOfId(tenant, new ForumId(aForumId));
 
-        Moderator moderator =
-                this.collaboratorService().moderatorFrom(tenant, aModeratorId);
+        Moderator moderator = this.collaboratorService().moderatorFrom(tenant, aModeratorId);
 
         Post post = this.postRepository().postOfId(tenant, new PostId(aPostId));
 

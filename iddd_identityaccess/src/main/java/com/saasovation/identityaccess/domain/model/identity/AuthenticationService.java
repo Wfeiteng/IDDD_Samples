@@ -22,10 +22,7 @@ public class AuthenticationService extends AssertionConcern {
     private TenantRepository tenantRepository;
     private UserRepository userRepository;
 
-    public AuthenticationService(
-            TenantRepository aTenantRepository,
-            UserRepository aUserRepository,
-            EncryptionService anEncryptionService) {
+    public AuthenticationService(TenantRepository aTenantRepository, UserRepository aUserRepository, EncryptionService anEncryptionService) {
 
         super();
 
@@ -34,10 +31,7 @@ public class AuthenticationService extends AssertionConcern {
         this.userRepository = aUserRepository;
     }
 
-    public UserDescriptor authenticate(
-            TenantId aTenantId,
-            String aUsername,
-            String aPassword) {
+    public UserDescriptor authenticate(TenantId aTenantId, String aUsername, String aPassword) {
 
         this.assertArgumentNotNull(aTenantId, "TenantId must not be null.");
         this.assertArgumentNotEmpty(aUsername, "Username must be provided.");
@@ -50,12 +44,7 @@ public class AuthenticationService extends AssertionConcern {
         if (tenant != null && tenant.isActive()) {
             String encryptedPassword = this.encryptionService().encryptedValue(aPassword);
 
-            User user =
-                    this.userRepository()
-                        .userFromAuthenticCredentials(
-                            aTenantId,
-                            aUsername,
-                            encryptedPassword);
+            User user = this.userRepository().userFromAuthenticCredentials(aTenantId, aUsername, encryptedPassword);
 
             if (user != null && user.isEnabled()) {
                 userDescriptor = user.userDescriptor();

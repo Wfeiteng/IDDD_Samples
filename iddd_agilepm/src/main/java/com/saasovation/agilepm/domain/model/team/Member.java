@@ -29,26 +29,15 @@ public abstract class Member extends Entity {
     private TenantId tenantId;
     private String username;
 
-    public Member(
-            TenantId aTenantId,
-            String aUsername,
-            String aFirstName,
-            String aLastName,
-            String anEmailAddress,
-            Date anInitializedOn) {
+    public Member(TenantId aTenantId, String aUsername, String aFirstName, String aLastName, String anEmailAddress, Date anInitializedOn) {
 
         this(aTenantId, aUsername, aFirstName, aLastName, anEmailAddress);
 
-        this.setChangeTracker(
-                new MemberChangeTracker(
-                        anInitializedOn,
-                        anInitializedOn,
-                        anInitializedOn));
+        this.setChangeTracker(new MemberChangeTracker(anInitializedOn, anInitializedOn, anInitializedOn));
     }
 
     public void changeEmailAddress(String anEmailAddress, Date asOfDate) {
-        if (this.changeTracker().canChangeEmailAddress(asOfDate) &&
-            !this.emailAddress().equals(anEmailAddress)) {
+        if (this.changeTracker().canChangeEmailAddress(asOfDate) && !this.emailAddress().equals(anEmailAddress)) {
             this.setEmailAddress(anEmailAddress);
             this.setChangeTracker(this.changeTracker().emailAddressChangedOn(asOfDate));
         }
@@ -100,12 +89,7 @@ public abstract class Member extends Entity {
         return this.username;
     }
 
-    protected Member(
-            TenantId aTenantId,
-            String aUsername,
-            String aFirstName,
-            String aLastName,
-            String anEmailAddress) {
+    protected Member(TenantId aTenantId, String aUsername, String aFirstName, String aLastName, String anEmailAddress) {
 
         this();
 

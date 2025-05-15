@@ -47,9 +47,7 @@ public class TeamMemberId extends ValueObject {
 
         if (anObject != null && this.getClass() == anObject.getClass()) {
             TeamMemberId typedObject = (TeamMemberId) anObject;
-            equalObjects =
-                this.tenantId().equals(typedObject.tenantId()) &&
-                this.id().equals(typedObject.id());
+            equalObjects = this.tenantId().equals(typedObject.tenantId()) && this.id().equals(typedObject.id());
         }
 
         return equalObjects;
@@ -57,9 +55,7 @@ public class TeamMemberId extends ValueObject {
 
     @Override
     public int hashCode() {
-        int hashCodeValue =
-            + (43685 * 83)
-            + this.id().hashCode();
+        int hashCodeValue = +(43685 * 83) + this.id().hashCode();
 
         return hashCodeValue;
     }

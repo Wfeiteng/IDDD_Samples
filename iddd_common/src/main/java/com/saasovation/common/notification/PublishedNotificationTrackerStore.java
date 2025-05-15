@@ -22,9 +22,7 @@ public interface PublishedNotificationTrackerStore {
 
     public PublishedNotificationTracker publishedNotificationTracker(String aTypeName);
 
-    public void trackMostRecentPublishedNotification(
-            PublishedNotificationTracker aPublishedNotificationTracker,
-            List<Notification> aNotifications);
+    public void trackMostRecentPublishedNotification(PublishedNotificationTracker aPublishedNotificationTracker, List<Notification> aNotifications);
 
     public String typeName();
 }

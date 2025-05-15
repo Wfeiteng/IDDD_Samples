@@ -25,8 +25,7 @@ public class SlothMQDiscussionStartedListener extends ExchangeListener {
 
     private ProductApplicationService productApplicationService;
 
-    public SlothMQDiscussionStartedListener(
-            ProductApplicationService aProductApplicationService) {
+    public SlothMQDiscussionStartedListener(ProductApplicationService aProductApplicationService) {
 
         super();
 
@@ -49,24 +48,15 @@ public class SlothMQDiscussionStartedListener extends ExchangeListener {
         }
 
         String tenantId = reader.eventStringValue("tenant.id");
-        String productId =
-                ProductDiscussionExclusiveOwnerId
-                    .fromEncodedId(ownerId)
-                    .id();
+        String productId = ProductDiscussionExclusiveOwnerId.fromEncodedId(ownerId).id();
         String discussionId = reader.eventStringValue("discussionId.id");
 
-        this.productApplicationService().initiateDiscussion(
-                new InitiateDiscussionCommand(
-                    tenantId,
-                    productId,
-                    discussionId));
+        this.productApplicationService().initiateDiscussion(new InitiateDiscussionCommand(tenantId, productId, discussionId));
     }
 
     @Override
     protected String[] listensTo() {
-        return new String[] {
-                "com.saasovation.collaboration.domain.model.forum.DiscussionStarted"
-                };
+        return new String[]{"com.saasovation.collaboration.domain.model.forum.DiscussionStarted"};
     }
 
     private ProductApplicationService productApplicationService() {

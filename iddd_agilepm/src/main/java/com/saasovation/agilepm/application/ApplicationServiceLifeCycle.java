@@ -41,19 +41,13 @@ public class ApplicationServiceLifeCycle {
     private static PublishedNotificationTrackerStore publishedNotificationTrackerStore;
 
     static {
-        database =
-                LevelDBProvider
-                    .instance()
-                    .databaseFrom(LevelDBDatabasePath.agilePMPath());
+        database = LevelDBProvider.instance().databaseFrom(LevelDBDatabasePath.agilePMPath());
 
         eventStore = new LevelDBEventStore(LevelDBDatabasePath.agilePMPath());
 
         timer = new NotificationPublisherTimer();
 
-        publishedNotificationTrackerStore =
-                new LevelDBPublishedNotificationTrackerStore(
-                        LevelDBDatabasePath.agilePMPath(),
-                        "saasovation.agilepm");
+        publishedNotificationTrackerStore = new LevelDBPublishedNotificationTrackerStore(LevelDBDatabasePath.agilePMPath(), "saasovation.agilepm");
 
 //        notificationPublisher =
 //                new RabbitMQNotificationPublisher(
@@ -61,11 +55,7 @@ public class ApplicationServiceLifeCycle {
 //                        publishedNotificationTrackerStore,
 //                        Exchanges.AGILEPM_EXCHANGE_NAME);
 
-        notificationPublisher =
-                new SlothMQNotificationPublisher(
-                        eventStore,
-                        publishedNotificationTrackerStore,
-                        Exchanges.AGILEPM_EXCHANGE_NAME);
+        notificationPublisher = new SlothMQNotificationPublisher(eventStore, publishedNotificationTrackerStore, Exchanges.AGILEPM_EXCHANGE_NAME);
 
         notificationApplicationService = new NotificationApplicationService(notificationPublisher);
 
@@ -107,18 +97,16 @@ public class ApplicationServiceLifeCycle {
     private static void listen() {
         DomainEventPublisher.instance().reset();
 
-        DomainEventPublisher
-            .instance()
-            .subscribe(new DomainEventSubscriber<DomainEvent>() {
+        DomainEventPublisher.instance().subscribe(new DomainEventSubscriber<DomainEvent>() {
 
-                public void handleEvent(DomainEvent aDomainEvent) {
-                    eventStore.append(aDomainEvent);
-                }
+            public void handleEvent(DomainEvent aDomainEvent) {
+                eventStore.append(aDomainEvent);
+            }
 
-                public Class<DomainEvent> subscribedToEventType() {
-                    return DomainEvent.class; // all domain events
-                }
-            });
+            public Class<DomainEvent> subscribedToEventType() {
+                return DomainEvent.class; // all domain events
+            }
+        });
     }
 
     // TODO: need to monitor this...

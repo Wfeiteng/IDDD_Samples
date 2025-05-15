@@ -71,7 +71,7 @@ public class LevelDBReleaseRepository
 
         Release release =
                 LevelDBUnitOfWork.readOnly(this.database())
-                    .readObject(primaryKey.key().getBytes(), Release.class);
+                                 .readObject(primaryKey.key().getBytes(), Release.class);
 
         return release;
     }

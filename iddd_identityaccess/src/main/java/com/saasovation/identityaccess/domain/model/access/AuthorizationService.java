@@ -27,10 +27,7 @@ public class AuthorizationService extends AssertionConcern {
     private RoleRepository roleRepository;
     private UserRepository userRepository;
 
-    public AuthorizationService(
-            UserRepository aUserRepository,
-            GroupRepository aGroupRepository,
-            RoleRepository aRoleRepository) {
+    public AuthorizationService(UserRepository aUserRepository, GroupRepository aGroupRepository, RoleRepository aRoleRepository) {
 
         super();
 
@@ -59,10 +56,7 @@ public class AuthorizationService extends AssertionConcern {
             Role role = this.roleRepository().roleNamed(aUser.tenantId(), aRoleName);
 
             if (role != null) {
-                GroupMemberService groupMemberService =
-                        new GroupMemberService(
-                                this.userRepository(),
-                                this.groupRepository());
+                GroupMemberService groupMemberService = new GroupMemberService(this.userRepository(), this.groupRepository());
 
                 authorized = role.isInRole(aUser, groupMemberService);
             }

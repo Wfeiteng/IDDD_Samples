@@ -115,7 +115,7 @@ public class LevelDBBacklogItemRepository
 
         BacklogItem backlogItem =
                 LevelDBUnitOfWork.readOnly(this.database())
-                    .readObject(primaryKey.key().getBytes(), BacklogItem.class);
+                                 .readObject(primaryKey.key().getBytes(), BacklogItem.class);
 
         return backlogItem;
     }

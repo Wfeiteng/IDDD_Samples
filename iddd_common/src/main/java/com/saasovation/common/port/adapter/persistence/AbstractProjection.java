@@ -29,8 +29,7 @@ public abstract class AbstractProjection implements EventDispatcher {
 
     private static final String PROJECTION_METHOD_NAME = "when";
 
-    private static Map<String, Method> projectionMethods =
-            new HashMap<String, Method>();
+    private static Map<String, Method> projectionMethods = new HashMap<String, Method>();
 
     protected AbstractProjection() {
         super();
@@ -51,13 +50,10 @@ public abstract class AbstractProjection implements EventDispatcher {
         ResultSet result = null;
 
         try {
-            statement =
-                ConnectionProvider
-                    .connection()
-                    .prepareStatement(aQuery);
+            statement = ConnectionProvider.connection().prepareStatement(aQuery);
 
             for (int idx = 0; idx < anArguments.length; ++idx) {
-                statement.setString(idx+1, anArguments[idx]);
+                statement.setString(idx + 1, anArguments[idx]);
             }
 
             result = statement.executeQuery();
@@ -114,40 +110,18 @@ public abstract class AbstractProjection implements EventDispatcher {
 
         } catch (InvocationTargetException e) {
             if (e.getCause() != null) {
-                throw new RuntimeException(
-                        "Method "
-                                + PROJECTION_METHOD_NAME
-                                + "("
-                                + eventType.getSimpleName()
-                                + ") failed. See cause: "
-                                + e.getMessage(),
-                        e.getCause());
+                throw new RuntimeException("Method " + PROJECTION_METHOD_NAME + "(" + eventType.getSimpleName() + ") failed. See cause: " + e.getMessage(), e.getCause());
             }
 
-            throw new RuntimeException(
-                    "Method "
-                            + PROJECTION_METHOD_NAME
-                            + "("
-                            + eventType.getSimpleName()
-                            + ") failed. See cause: "
-                            + e.getMessage(),
-                    e);
+            throw new RuntimeException("Method " + PROJECTION_METHOD_NAME + "(" + eventType.getSimpleName() + ") failed. See cause: " + e.getMessage(), e);
 
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(
-                    "Method "
-                            + PROJECTION_METHOD_NAME
-                            + "("
-                            + eventType.getSimpleName()
-                            + ") failed because of illegal access. See cause: "
-                            + e.getMessage(),
-                    e);
+            throw new RuntimeException("Method " + PROJECTION_METHOD_NAME + "(" + eventType.getSimpleName() + ") failed because of illegal access. See cause: " + e.getMessage(),
+                                       e);
         }
     }
 
-    protected boolean understandsAnyOf(
-            Class<?> aDispatchedType,
-            Class<?>[] anUnderstoodEventTypes) {
+    protected boolean understandsAnyOf(Class<?> aDispatchedType, Class<?>[] anUnderstoodEventTypes) {
 
         for (Class<?> eventType : anUnderstoodEventTypes) {
             if (aDispatchedType == eventType) {
@@ -160,10 +134,7 @@ public abstract class AbstractProjection implements EventDispatcher {
         return false;
     }
 
-    private Method cacheProjectionMethodFor(
-            String aKey,
-            Class<? extends AbstractProjection> aRootType,
-            Class<? extends DomainEvent> anEventType) {
+    private Method cacheProjectionMethodFor(String aKey, Class<? extends AbstractProjection> aRootType, Class<? extends DomainEvent> anEventType) {
 
         synchronized (projectionMethods) {
             try {
@@ -177,21 +148,13 @@ public abstract class AbstractProjection implements EventDispatcher {
 
             } catch (Exception e) {
                 throw new IllegalArgumentException(
-                        "I do not understand "
-                                + PROJECTION_METHOD_NAME
-                                + "("
-                                + anEventType.getSimpleName()
-                                + ") because: "
-                                + e.getClass().getSimpleName() + ">>>" + e.getMessage(),
+                        "I do not understand " + PROJECTION_METHOD_NAME + "(" + anEventType.getSimpleName() + ") because: " + e.getClass().getSimpleName() + ">>>" + e.getMessage(),
                         e);
             }
         }
     }
 
-    private Method hiddenOrPublicMethod(
-            Class<? extends AbstractProjection> aRootType,
-            Class<? extends DomainEvent> anEventType)
-    throws Exception {
+    private Method hiddenOrPublicMethod(Class<? extends AbstractProjection> aRootType, Class<? extends DomainEvent> anEventType) throws Exception {
 
         Method method = null;
 
@@ -199,17 +162,13 @@ public abstract class AbstractProjection implements EventDispatcher {
 
             // assume protected or private...
 
-            method = aRootType.getDeclaredMethod(
-                    PROJECTION_METHOD_NAME,
-                    anEventType);
+            method = aRootType.getDeclaredMethod(PROJECTION_METHOD_NAME, anEventType);
 
         } catch (Exception e) {
 
             // then public...
 
-            method = aRootType.getMethod(
-                    PROJECTION_METHOD_NAME,
-                    anEventType);
+            method = aRootType.getMethod(PROJECTION_METHOD_NAME, anEventType);
         }
 
         return method;
